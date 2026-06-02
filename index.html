@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>SIAP-LEWAMORI | Peta Jalan Lewamori</title>
+  <!-- Tailwind CSS + Font Awesome + Google Fonts -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700;800&display=swap" rel="stylesheet">
+  <!-- Leaflet for Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    body {
+      background-image: url('https://res.cloudinary.com/de4prnqa4/image/upload/v1780409230/latar_jalan_lewamori_hk7m4d.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      position: relative;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.55);
+      z-index: -1;
+    }
+    .card-glass {
+      background: rgba(30, 30, 35, 0.85);
+      backdrop-filter: blur(8px);
+      border-radius: 1.5rem;
+      border: 1px solid rgba(243, 156, 18, 0.5);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      color: #f0f0f0;
+    }
+    .card-glass:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 25px -12px rgba(0, 0, 0, 0.3);
+    }
+    .btn-primary {
+      background: #f39c12;
+      color: #1a252f;
+      transition: all 0.2s;
+      font-weight: 700;
+    }
+    .btn-primary:hover {
+      background: #e67e22;
+      transform: scale(1.02);
+      color: white;
+    }
+    .btn-outline-light {
+      border: 2px solid #f1c40f;
+      background: transparent;
+      transition: all 0.2s;
+      color: #f1c40f;
+      font-weight: 600;
+    }
+    .btn-outline-light:hover {
+      background: rgba(241, 196, 15, 0.2);
+      transform: scale(1.02);
+      color: #f39c12;
+    }
+    .badge-status {
+      padding: 0.2rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: bold;
+    }
+    .badge-sudah { background: #2ecc71; color: white; }
+    .badge-proses { background: #f39c12; color: #1e2a36; }
+    .badge-belum { background: #e74c3c; color: white; }
+    #mapPreview { height: 500px; border-radius: 1rem; z-index: 1; border: 2px solid #f39c12; }
+    .navbar-glass {
+      background: rgba(26, 37, 47, 0.9);
+      backdrop-filter: blur(10px);
+      border-bottom: 2px solid #f39c12;
+    }
+    .text-construction { color: #f39c12; }
+    .footer-bg { background: #1a252f; border-top: 2px solid #f39c12; }
+    .feature-icon-wrapper {
+      background: rgba(243, 156, 18, 0.2);
+      transition: all 0.3s ease;
+    }
+    .feature-icon-wrapper:hover {
+      background: rgba(243, 156, 18, 0.4);
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body class="text-gray-100">
+
+  <!-- NAVBAR -->
+  <nav class="sticky top-0 z-50 navbar-glass shadow-md">
+    <div class="max-w-7xl mx-auto px-5 py-3 flex flex-wrap items-center justify-between">
+      <div class="flex items-center gap-3">
+        <img src="https://res.cloudinary.com/de4prnqa4/image/upload/v1780411332/logo_lewamori_d95x7i.jpg" alt="Logo SIAP-LEWAMORI" class="w-12 h-12 object-contain rounded-lg">
+        <div>
+          <div class="font-extrabold text-xl tracking-tight text-white">SIAP-<span class="text-construction">LEWAMORI</span></div>
+          <div class="text-[0.65rem] font-semibold uppercase text-yellow-300">Sistem Informasi Administrasi Pertanahan Jalan Lewamori</div>
+        </div>
+      </div>
+      <div class="hidden md:flex gap-6 font-medium text-gray-200">
+        <a href="#home" class="hover:text-yellow-400 transition">Beranda</a>
+        <a href="#tentang" class="hover:text-yellow-400 transition">Tentang</a>
+        <a href="#fitur" class="hover:text-yellow-400 transition">Fitur</a>
+        <a href="#peta" class="hover:text-yellow-400 transition">Peta</a>
+      </div>
+ <a href="aplikasi_lewamori.html" target="_blank" rel="noopener noreferrer" class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 px-5 py-2 rounded-full font-bold shadow-md transition flex items-center gap-2"><i class="fas fa-sign-in-alt"></i> Akses Aplikasi</a>    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section id="home" class="py-20 md:py-28 px-5">
+    <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12">
+      <div class="flex-1 text-center lg:text-left">
+        <div class="inline-block bg-yellow-600/80 backdrop-blur-sm rounded-full px-4 py-1 text-sm font-semibold mb-4"><i class="fas fa-road mr-1"></i> Desa Sondosia, Kec. Bolo – Kab. Bima</div>
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
+          <span class="text-white">Kelola Sertipikasi Tanah</span><br>
+          <span class="text-yellow-400">Jalan Lewamori Secara Digital</span>
+        </h1>
+        <p class="mt-6 text-lg text-gray-200 max-w-2xl mx-auto lg:mx-0">Sistem informasi terintegrasi untuk administrasi pertanahan, digitalisasi proses sertipikat, pemetaan interaktif, dan rekapan data real-time.</p>
+        <div class="mt-8 flex flex-wrap gap-4 justify-center lg:justify-start">
+          <a href="#peta" class="btn-primary px-6 py-3 rounded-full shadow-lg flex items-center gap-2"><i class="fas fa-map-marker-alt"></i> Lihat Peta Interaktif</a>
+          <a href="#tentang" class="btn-outline-light px-6 py-3 rounded-full flex items-center gap-2"><i class="fas fa-info-circle"></i> Pelajari Lebih Lanjut</a>
+        </div>
+      </div>
+      <div class="flex-1 flex justify-center">
+        <div class="relative">
+          <div class="bg-gradient-to-br from-yellow-500 to-orange-600 rounded-3xl p-2 shadow-2xl">
+            <div class="bg-gray-800 rounded-2xl p-3 w-64 md:w-72">
+              <div class="flex items-center gap-2 border-b border-yellow-600 pb-2"><i class="fas fa-file-signature text-yellow-500"></i><span class="font-bold text-sm text-white">Proses Sertipikat Terbaru</span></div>
+              <div class="mt-2 space-y-1 text-xs text-gray-300"><div class="flex justify-between"><span>Pemegang Hak:</span><span class="font-semibold text-white">H. Muhammad Ali</span></div><div class="flex justify-between"><span>Luas:</span><span>1.250 m²</span></div><div class="flex justify-between"><span>Status:</span><span class="badge-status badge-sudah">SUDAH JADI</span></div></div>
+              <div class="mt-2 border-t border-gray-600 pt-2 flex justify-between text-[11px] text-gray-400"><span><i class="fas fa-calendar"></i> 2025</span><span><i class="fas fa-map-pin"></i> Sondosia</span></div>
+            </div>
+          </div>
+          <div class="absolute -bottom-4 -right-4 bg-blue-600 rounded-full p-2 shadow-md"><i class="fas fa-hard-hat text-white text-xl"></i></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TENTANG APLIKASI -->
+  <section id="tentang" class="py-16 px-5 max-w-7xl mx-auto">
+    <div class="card-glass p-6 md:p-8">
+      <div class="text-center mb-6">
+        <span class="text-yellow-400 font-semibold text-sm uppercase tracking-wide"><i class="fas fa-info-circle mr-1"></i> Tentang SIAP-LEWAMORI</span>
+        <h2 class="text-3xl font-bold mt-2 text-white">Sistem Informasi Administrasi Pertanahan Jalan Lewamori</h2>
+      </div>
+      <p class="text-gray-200 leading-relaxed text-center max-w-4xl mx-auto">
+        Aplikasi ini dirancang khusus untuk memfasilitasi administrasi pertanahan di kawasan <strong class="text-yellow-400">Jalan Lewamori, Desa Sondosia, Kecamatan Bolo, Kabupaten Bima</strong>. 
+        Dengan fitur digitalisasi proses sertipikat, pemetaan interaktif, dan rekapan data real-time, pengguna dapat memantau status proses sertipikasi tanah secara sistematis dan transparan.
+      </p>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 max-w-3xl mx-auto">
+        <div class="flex flex-col items-center gap-2"><i class="fas fa-file-alt text-2xl text-yellow-500"></i><span class="text-sm font-medium text-gray-200">Digitalisasi Sertipikat</span></div>
+        <div class="flex flex-col items-center gap-2"><i class="fas fa-map-marked-alt text-2xl text-yellow-500"></i><span class="text-sm font-medium text-gray-200">Pemetaan Interaktif</span></div>
+        <div class="flex flex-col items-center gap-2"><i class="fas fa-chart-line text-2xl text-yellow-500"></i><span class="text-sm font-medium text-gray-200">Rekapan Real-time</span></div>
+        <div class="flex flex-col items-center gap-2"><i class="fas fa-check-circle text-2xl text-yellow-500"></i><span class="text-sm font-medium text-gray-200">Transparansi Proses</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FITUR UNGGULAN -->
+  <section id="fitur" class="py-16 px-5">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <span class="text-yellow-400 font-bold uppercase text-sm">Keunggulan Sistem</span>
+        <h2 class="text-3xl md:text-4xl font-bold mt-2 text-white">Fitur Lengkap untuk Administrasi Pertanahan</h2>
+        <p class="text-gray-300 mt-3">Dirancang untuk memudahkan monitoring, pelaporan, dan visualisasi data tanah di wilayah Lewamori.</p>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="card-glass p-5 text-center group">
+          <div class="feature-icon-wrapper w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-all">
+            <i class="fas fa-microchip text-3xl text-yellow-400"></i>
+          </div>
+          <h3 class="font-bold text-lg text-white mb-1">Digitalisasi Sertipikat</h3>
+          <p class="text-sm text-gray-300">Ubah proses manual menjadi digital, simpan data sertipikat dengan aman dan terstruktur.</p>
+        </div>
+        <div class="card-glass p-5 text-center group">
+          <div class="feature-icon-wrapper w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-all">
+            <i class="fas fa-draw-polygon text-3xl text-yellow-400"></i>
+          </div>
+          <h3 class="font-bold text-lg text-white mb-1">Pemetaan Interaktif</h3>
+          <p class="text-sm text-gray-300">Lihat lokasi setiap bidang tanah pada peta digital, lengkap dengan informasi pemilik dan status proses.</p>
+        </div>
+        <div class="card-glass p-5 text-center group">
+          <div class="feature-icon-wrapper w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-all">
+            <i class="fas fa-chart-simple text-3xl text-yellow-400"></i>
+          </div>
+          <h3 class="font-bold text-lg text-white mb-1">Rekapan Real-time</h3>
+          <p class="text-sm text-gray-300">Pantau perkembangan status sertipikasi (Sudah Jadi, Proses, Belum Daftar) secara langsung.</p>
+        </div>
+        <div class="card-glass p-5 text-center group">
+          <div class="feature-icon-wrapper w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-all">
+            <i class="fas fa-file-export text-3xl text-yellow-400"></i>
+          </div>
+          <h3 class="font-bold text-lg text-white mb-1">Ekspor & Impor Data</h3>
+          <p class="text-sm text-gray-300">Dukung format Excel (XLSX) dan KML untuk integrasi dengan perangkat lunak lain.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PETA INTERAKTIF dengan KML Jalan Lewamori (LENGKAP) -->
+  <section id="peta" class="py-16 px-5">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-8">
+        <h2 class="text-3xl font-bold text-white">Peta Sebaran Tanah & Jalan Lewamori</h2>
+        <p class="text-gray-300">Visualisasi lokasi bidang tanah dan jalur Jalan Lewamori, Desa Sondosia.</p>
+      </div>
+      <div class="card-glass p-3">
+        <div id="mapPreview" class="h-[500px] w-full rounded-xl z-0"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer-bg py-6 px-5 text-center text-gray-300 text-sm">
+    <div class="max-w-7xl mx-auto">
+      <p>Dibuat oleh Ianz / Bidang Pertanahan Dinas Perumahan dan Kawasan Permukiman Kabupaten Bima @2026</p>
+    </div>
+  </footer>
+
+  <script>
+    // ========================
+    // DATA KML LENGKAP (semua Placemark dari file "jalan lewamori garis.kml")
+    // ========================
+    const fullKmlString = `<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+  <name>jalan lewamori garis.kml</name>
+  <StyleMap id="ROW0000">
+    <Pair><key>normal</key><styleUrl>#ROW1000</styleUrl></Pair>
+    <Pair><key>highlight</key><styleUrl>#ROW90</styleUrl></Pair>
+  </StyleMap>
+  <Style id="ROW1000"><LineStyle><color>ff00ffff</color><width>0.8</width></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+  <Style id="ROW20"><LineStyle><color>ff00ffff</color><width>0.8</width></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+  <StyleMap id="ROW30"><Pair><key>normal</key><styleUrl>#ROW20</styleUrl></Pair><Pair><key>highlight</key><styleUrl>#ROW50</styleUrl></Pair></StyleMap>
+  <Style id="ROW40"><LineStyle><color>ff00ffff</color><width>0.8</width></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+  <Style id="ROW50"><LineStyle><color>ff00ffff</color><width>0.8</width></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+  <Style id="ROW90"><LineStyle><color>ff00ffff</color><width>0.8</width></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+  <Folder>
+    <name>ROW</name>
+    <open>1</open>
+    <Style id="ROW"><LineStyle><color>ff00ffff</color><width>0.8</width></LineStyle><PolyStyle><fill>0</fill></PolyStyle></Style>
+    <Placemark><styleUrl>#ROW0000</styleUrl><LineString><coordinates>118.6748639671282,-8.518857560656391,1 118.66822192,-8.520665409999999,1 118.66808649,-8.520706669999999,1 118.66795171,-8.520749990000001,1 118.66781761,-8.52079537,1 118.66768423,-8.52084279,1 118.6675516,-8.520892249999999,1 118.66741974,-8.520943730000001,1 118.6672887,-8.52099722,1 118.6671585,-8.5210527,1 118.66702917,-8.521110180000001,1 118.66690074,-8.52116962,1 118.66677324,-8.52123102,1 118.66664671,-8.521294360000001,1 118.66652117,-8.521359629999999,1 118.66639665,-8.52142682,1 118.66627318,-8.5214959,1 118.66615079,-8.52156686,1 118.66602952,-8.52163968,1 118.66590938,-8.52171435,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW30</styleUrl><LineString><coordinates>118.6749050866405,-8.519022086550702,1 118.66829964,-8.52092539,1 118.66816821,-8.52096542,1 118.66803742,-8.521007470000001,1 118.66790729,-8.5210515,1 118.66777785,-8.52109752,1 118.66764914,-8.521145519999999,1 118.66752118,-8.521195479999999,1 118.66739401,-8.521247389999999,1 118.66726765,-8.521301230000001,1 118.66714215,-8.521357009999999,1 118.66701751,-8.52141469,1 118.66689379,-8.52147428,1 118.66677099,-8.52153575,1 118.66664916,-8.52159909,1 118.66652832,-8.52166429,1 118.6664085,-8.52173133,1 118.66628973,-8.52180019,1 118.66617204,-8.52187086,1 118.66605545,-8.52194332,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.67557129,-8.51629958,1 118.67640318,-8.51633651,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.67667371,-8.52045266,1 118.67670532,-8.520454969999999,1 118.67673657,-8.52045732,1 118.67676755,-8.52045976,1 118.67679824,-8.520462370000001,1 118.67682863,-8.52046518,1 118.6768587,-8.520468259999999,1 118.67688846,-8.52047166,1 118.67691789,-8.52047542,1 118.67694697,-8.5204796,1 118.67697568,-8.52048424,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.67667371,-8.52045266,1 118.6761343,-8.520413380000001,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.67501945,-8.51867551,1 118.67501513,-8.51866149,1 118.67501072,-8.518647489999999,1 118.67500624,-8.518633510000001,1 118.67500168,-8.518619559999999,1 118.67499703,-8.518605640000001,1 118.67499231,-8.51859174,1 118.6749875,-8.51857788,1 118.67498261,-8.518564039999999,1 118.67497765,-8.51855022,1 118.6749726,-8.51853644,1 118.67496747,-8.518522689999999,1 118.67496226,-8.51850896,1 118.67495698,-8.518495270000001,1 118.67495161,-8.518481599999999,1 118.67494617,-8.51846797,1 118.67494064,-8.518454370000001,1 118.67493504,-8.5184408,1 118.67492936,-8.518427259999999,1 118.6749236,-8.51841376,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.67474939,-8.517933960000001,1 118.67462922,-8.51765449,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.67517028,-8.519605090000001,1 118.6751731,-8.5196284,1 118.6751784,-8.519664410000001,1 118.67518508,-8.51970083,1 118.67519334,-8.51973763,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.67519334,-8.51973763,1 118.67520597,-8.519783350000001,1 118.67522108,-8.519828309999999,1 118.67523864,-8.519872380000001,1 118.6752586,-8.51991544,1 118.67528088,-8.519957339999999,1 118.67530543,-8.51999797,1 118.67533217,-8.52003721,1 118.67536102,-8.52007493,1 118.6753919,-8.520111030000001,1 118.67542472,-8.520145400000001,1 118.67545937,-8.520177929999999,1 118.67549575,-8.52020853,1 118.67553375,-8.520237099999999,1 118.67557327,-8.520263569999999,1 118.67561418,-8.520287850000001,1 118.67565636,-8.52030987,1 118.67569969,-8.52032956,1 118.67574403,-8.520346869999999,1 118.67578925,-8.520361749999999,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.6761343,-8.520413380000001,1 118.67610238,-8.520411040000001,1 118.67606969,-8.520408489999999,1 118.67603644,-8.520405609999999,1 118.67600259,-8.52040223,1 118.67596818,-8.520398180000001,1 118.67593324,-8.5203933,1 118.67589781,-8.52038741,1 118.67586196,-8.52038031,1 118.67582575,-8.52037183,1 118.67578925,-8.520361749999999,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.67557129,-8.51629958,1 118.67553932,-8.516298190000001,1 118.67550655,-8.5162969,1 118.67547319,-8.516295879999999,1 118.67543918,-8.51629528,1 118.67540453,-8.51629528,1 118.67536926,-8.51629604,1 118.67533338,-8.51629776,1 118.67529694,-8.516300620000001,1 118.67525999,-8.51630482,1 118.67522255,-8.51631057,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.67522255,-8.51631057,1 118.67515164,-8.516326039999999,1 118.67508227,-8.516347339999999,1 118.67501492,-8.516374300000001,1 118.67495006,-8.51640675,1 118.67488813,-8.516444460000001,1 118.67482957,-8.516487160000001,1 118.67477478,-8.516534569999999,1 118.67472414,-8.516586350000001,1 118.67467801,-8.51664214,1 118.67463669,-8.51670156,1 118.67460049,-8.51676419,1 118.67456964,-8.51682961,1 118.67454436,-8.516897350000001,1 118.67452484,-8.51696695,1 118.6745112,-8.517037930000001,1 118.67450353,-8.517109789999999,1 118.6745019,-8.51718204,1 118.67450631,-8.517254169999999,1 118.67451673,-8.51732569,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.67462922,-8.51765449,1 118.67461665,-8.51762519,1 118.6746039,-8.51759511,1 118.67459119,-8.51756439,1 118.67457865,-8.51753291,1 118.67456645,-8.517500630000001,1 118.67455474,-8.51746749,1 118.67454372,-8.517433459999999,1 118.67453358,-8.517398500000001,1 118.67452451,-8.517362589999999,1 118.67451673,-8.51732569,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.67510849,-8.5191249,1 118.67517544,-8.51964525,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.67492221,-8.518410250000001,1 118.67474802,-8.5179305,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.66605545,-8.52194332,1 118.66522663,-8.522467300000001,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.66590938,-8.52171435,1 118.66508056,-8.52223833,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.65188471,-8.521672349999999,1 118.65960854,-8.523430319999999,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.65194545,-8.521407930000001,1 118.65966927,-8.5231659,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.65139839,-8.52080885,1 118.65140281,-8.52079518,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.6516412,-8.52088419,1 118.65164242,-8.52088041,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.65960854,-8.523430319999999,1 118.65991013,-8.52349242,1 118.66021406,-8.52354197,1 118.6605198,-8.5235789,1 118.66082681,-8.523603140000001,1 118.66113457,-8.52361464,1 118.66144255,-8.52361338,1 118.6617502,-8.52359938,1 118.66205701,-8.52357265,1 118.66236243,-8.52353323,1 118.66266594,-8.52348121,1 118.66296701,-8.523416660000001,1 118.66326513,-8.523339699999999,1 118.66355977,-8.52325046,1 118.66385043,-8.523149099999999,1 118.6641366,-8.52303579,1 118.66441779,-8.52291073,1 118.66469351,-8.52277413,1 118.66496328,-8.522626239999999,1 118.66522664,-8.522467300000001,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.65966927,-8.5231659,1 118.65995976,-8.52322571,1 118.6602525,-8.523273440000001,1 118.66054698,-8.52330901,1 118.6608427,-8.52333235,1 118.66113913,-8.523343430000001,1 118.66143577,-8.52334222,1 118.6617321,-8.523328729999999,1 118.66202761,-8.52330298,1 118.66232179,-8.52326502,1 118.66261413,-8.52321491,1 118.66290412,-8.52315274,1 118.66319126,-8.523078610000001,1 118.66347505,-8.52299266,1 118.66375501,-8.522895030000001,1 118.66403065,-8.52278589,1 118.66430149,-8.52266543,1 118.66456706,-8.522533859999999,1 118.6648269,-8.522391409999999,1 118.66508056,-8.52223832,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.65119918,-8.52224915,1 118.65127139,-8.522015469999999,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.65098215,-8.522182689999999,1 118.65105458,-8.521948289999999,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.65188471,-8.52167236,1 118.65187693,-8.52167083,1 118.65186908,-8.521669770000001,1 118.65186117,-8.521669190000001,1 118.65185324,-8.52166907,1 118.65184532,-8.52166944,1 118.65183744,-8.52167028,1 118.65182962,-8.52167158,1 118.6518219,-8.521673359999999,1 118.65181429,-8.521675589999999,1 118.65180684,-8.52167828,1 118.65179956,-8.5216814,1 118.65179248,-8.52168496,1 118.65178563,-8.521688940000001,1 118.65177904,-8.52169331,1 118.65177272,-8.52169808,1 118.6517667,-8.52170321,1 118.651761,-8.5217087,1 118.65175564,-8.52171452,1 118.65175065,-8.52172064,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.6513889,-8.52192031,1 118.65141116,-8.52191775,1 118.65143327,-8.52191423,1 118.65145522,-8.521909750000001,1 118.65147694,-8.52190433,1 118.65149841,-8.52189798,1 118.65151959,-8.5218907,1 118.65154042,-8.52188252,1 118.65156088,-8.52187344,1 118.65158092,-8.52186348,1 118.65160051,-8.521852669999999,1 118.65161961,-8.52184102,1 118.65163818,-8.521828559999999,1 118.65165619,-8.5218153,1 118.65167361,-8.52180128,1 118.6516904,-8.521786519999999,1 118.65170652,-8.521771040000001,1 118.65172196,-8.52175488,1 118.65173668,-8.52173808,1 118.65175065,-8.52172064,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.65128681,-8.52089915,1 118.65122416,-8.520909639999999,1 118.65116328,-8.52092773,1 118.6511051,-8.520953130000001,1 118.6510505,-8.52098546,1 118.65100031,-8.521024239999999,1 118.6509553,-8.521068870000001,1 118.65091614,-8.52111867,1 118.65088343,-8.52117288,1 118.65085767,-8.5212307,1 118.65083925,-8.52129122,1 118.65082846,-8.521353550000001,1 118.65082544,-8.52141672,1 118.65083026,-8.52147978,1 118.65084283,-8.521541770000001,1 118.65086296,-8.52160175,1 118.65089036,-8.521658820000001,1 118.6509246,-8.521712089999999,1 118.65096516,-8.521760759999999,1 118.65101143,-8.521804100000001,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.65184578,-8.52130644,1 118.65184194,-8.52128929,1 118.65183752,-8.52127228,1 118.65183251,-8.52125543,1 118.65182692,-8.52123877,1 118.65182077,-8.5212223,1 118.65181405,-8.52120605,1 118.65180678,-8.52119004,1 118.65179896,-8.521174289999999,1 118.6517906,-8.521158809999999,1 118.65178172,-8.521143629999999,1 118.65177232,-8.521128750000001,1 118.65176241,-8.52111421,1 118.65175201,-8.52110002,1 118.65174113,-8.521086179999999,1 118.65172977,-8.52107273,1 118.65171797,-8.52105967,1 118.65170571,-8.521047019999999,1 118.65169304,-8.521034800000001,1 118.65167994,-8.52102301,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.6513889,-8.52192031,1 118.65138052,-8.52192136,1 118.65137221,-8.52192292,1 118.65136402,-8.52192499,1 118.65135597,-8.52192756,1 118.6513481,-8.521930619999999,1 118.65134043,-8.521934160000001,1 118.651333,-8.52193817,1 118.65132583,-8.52194263,1 118.65131896,-8.52194753,1 118.6513124,-8.521952840000001,1 118.65130619,-8.52195854,1 118.65130034,-8.52196462,1 118.65129489,-8.521971049999999,1 118.65128984,-8.5219778,1 118.65128522,-8.52198484,1 118.65128106,-8.521992170000001,1 118.65127735,-8.521999729999999,1 118.65127413,-8.52200751,1 118.65127139,-8.522015469999999,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.65105458,-8.521948289999999,1 118.65105681,-8.5219402,1 118.65105853,-8.52193198,1 118.65105974,-8.52192367,1 118.65106043,-8.521915310000001,1 118.6510606,-8.521906919999999,1 118.65106024,-8.52189853,1 118.65105937,-8.521890190000001,1 118.65105798,-8.521881909999999,1 118.65105608,-8.521873729999999,1 118.65105367,-8.52186569,1 118.65105077,-8.52185781,1 118.65104738,-8.52185012,1 118.65104352,-8.521842660000001,1 118.65103921,-8.521835449999999,1 118.65103446,-8.52182852,1 118.65102928,-8.52182189,1 118.6510237,-8.5218156,1 118.65101775,-8.521809660000001,1 118.65101143,-8.521804100000001,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.6516412,-8.52088419,1 118.65163897,-8.52089191,1 118.65163722,-8.520899740000001,1 118.65163595,-8.52090767,1 118.65163518,-8.52091566,1 118.65163489,-8.520923679999999,1 118.6516351,-8.520931709999999,1 118.65163581,-8.5209397,1 118.651637,-8.520947639999999,1 118.65163868,-8.52095549,1 118.65164084,-8.52096323,1 118.65164347,-8.52097081,1 118.65164656,-8.520978230000001,1 118.6516501,-8.52098544,1 118.65165408,-8.520992420000001,1 118.65165848,-8.52099915,1 118.65166328,-8.52100559,1 118.65166848,-8.52101173,1 118.65167404,-8.52101755,1 118.65167994,-8.52102301,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.65128681,-8.52089915,1 118.65129474,-8.520898069999999,1 118.65130259,-8.520896520000001,1 118.65131033,-8.520894500000001,1 118.65131794,-8.520892010000001,1 118.65132537,-8.52088906,1 118.65133262,-8.52088567,1 118.65133964,-8.52088185,1 118.65134642,-8.520877609999999,1 118.65135293,-8.520872969999999,1 118.65135914,-8.52086794,1 118.65136503,-8.52086255,1 118.65137059,-8.52085681,1 118.65137578,-8.52085074,1 118.65138059,-8.52084438,1 118.65138501,-8.52083773,1 118.65138901,-8.52083083,1 118.65139259,-8.520823699999999,1 118.65139572,-8.52081636,1 118.6513984,-8.52080885,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.65184578,-8.52130644,1 118.65184761,-8.52131412,1 118.65184989,-8.52132168,1 118.65185263,-8.52132909,1 118.65185581,-8.521336310000001,1 118.65185942,-8.52134334,1 118.65186345,-8.521350139999999,1 118.65186789,-8.52135668,1 118.65187271,-8.521362939999999,1 118.6518779,-8.52136891,1 118.65188344,-8.521374550000001,1 118.65188931,-8.521379850000001,1 118.65189549,-8.521384790000001,1 118.65190196,-8.52138935,1 118.6519087,-8.52139352,1 118.65191567,-8.52139727,1 118.65192286,-8.5214006,1 118.65193024,-8.5214035,1 118.65193777,-8.521405939999999,1 118.65194545,-8.521407930000001,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.6514785,-8.52062387,1 118.65159839,-8.520414499999999,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.6516826,-8.52068109,1 118.6517035,-8.52043814,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.6514785,-8.52062387,1 118.65147364,-8.520632470000001,1 118.65146887,-8.52064113,1 118.6514642,-8.52064983,1 118.65145962,-8.520658579999999,1 118.65145514,-8.520667380000001,1 118.65145076,-8.520676229999999,1 118.65144647,-8.52068513,1 118.65144229,-8.520694069999999,1 118.6514382,-8.520703060000001,1 118.65143421,-8.52071209,1 118.65143031,-8.52072117,1 118.65142652,-8.52073028,1 118.65142283,-8.52073944,1 118.65141924,-8.520748640000001,1 118.65141575,-8.520757870000001,1 118.65141236,-8.520767149999999,1 118.65140907,-8.52077646,1 118.65140589,-8.520785800000001,1 118.65140281,-8.52079518,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.65164242,-8.52088041,1 118.65164565,-8.520870179999999,1 118.65164876,-8.52085991,1 118.65165175,-8.520849610000001,1 118.65165461,-8.520839280000001,1 118.65165736,-8.520828910000001,1 118.65165997,-8.52081851,1 118.65166247,-8.52080808,1 118.65166484,-8.52079762,1 118.65166708,-8.52078713,1 118.6516692,-8.520776619999999,1 118.65167119,-8.52076608,1 118.65167306,-8.52075552,1 118.6516748,-8.52074494,1 118.65167642,-8.520734340000001,1 118.65167791,-8.520723719999999,1 118.65167927,-8.52071308,1 118.65168051,-8.52070243,1 118.65168162,-8.520691770000001,1 118.6516826,-8.52068109,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.67493651,-8.519011559999999,1 118.67489814,-8.519022290000001,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.67492593,-8.51884547,1 118.67485392,-8.518865610000001,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.67492593,-8.51884547,1 118.67493678,-8.51884194,1 118.67494729,-8.51883752,1 118.67495739,-8.51883224,1 118.67496701,-8.51882614,1 118.67497609,-8.518819260000001,1 118.67498455,-8.51881165,1 118.67499235,-8.51880336,1 118.67499942,-8.51879445,1 118.67500572,-8.51878498,1 118.6750112,-8.51877502,1 118.67501583,-8.51876463,1 118.67501956,-8.5187539,1 118.67502238,-8.518742899999999,1 118.67502427,-8.5187317,1 118.67502521,-8.51872038,1 118.67502519,-8.518709019999999,1 118.67502422,-8.51869771,1 118.6750223,-8.51868651,1 118.67501945,-8.51867551,1</coordinates></LineString></Placemark>
+    <Placemark><styleUrl>#ROW40</styleUrl><LineString><coordinates>118.67510849,-8.5191249,1 118.67510638,-8.51911282,1 118.67510318,-8.51910099,1 118.67509892,-8.519089490000001,1 118.67509364,-8.51907843,1 118.67508737,-8.51906788,1 118.67508017,-8.51905794,1 118.6750721,-8.519048679999999,1 118.67506323,-8.51904019,1 118.67505362,-8.51903253,1 118.67504335,-8.519025770000001,1 118.67503252,-8.51901996,1 118.6750212,-8.51901514,1 118.67500949,-8.51901136,1 118.67499748,-8.51900865,1 118.67498528,-8.51900702,1 118.67497298,-8.5190065,1 118.67496069,-8.519007090000001,1 118.67494849,-8.51900878,1 118.67493651,-8.519011559999999,1</coordinates></LineString></Placemark>
+  </Folder>
+</Document>
+</kml>`;
+
+    // Fungsi ekstrak semua polyline dari KML
+    function extractAllPolylines(kmlString) {
+      const parser = new DOMParser();
+      const kmlDoc = parser.parseFromString(kmlString, "text/xml");
+      const placemarks = kmlDoc.getElementsByTagName("Placemark");
+      const polylines = [];
+      for (let pm of placemarks) {
+        const lineString = pm.getElementsByTagName("LineString")[0];
+        if (!lineString) continue;
+        const coordsElem = lineString.getElementsByTagName("coordinates")[0];
+        if (!coordsElem) continue;
+        const coordText = coordsElem.textContent.trim();
+        const points = coordText.split(/\s+/);
+        const latlngs = [];
+        for (let pt of points) {
+          const parts = pt.split(',');
+          if (parts.length >= 2) {
+            const lon = parseFloat(parts[0]);
+            const lat = parseFloat(parts[1]);
+            if (!isNaN(lon) && !isNaN(lat)) latlngs.push([lat, lon]);
+          }
+        }
+        if (latlngs.length > 1) polylines.push(latlngs);
+      }
+      return polylines;
+    }
+
+    // Inisialisasi peta
+    const map = L.map('mapPreview').setView([-8.52, 118.67], 14);
+    
+    // Base layer (hybrid)
+    L.tileLayer('https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+      subdomains: ['mt0','mt1','mt2','mt3'],
+      attribution: 'Google Maps',
+      maxZoom: 19
+    }).addTo(map);
+    
+    // Marker pusat
+    L.marker([-8.523889, 118.658279]).bindPopup(`<b>Pusat Jalan Lewamori</b><br>Desa Sondosia`).addTo(map);
+    
+    // Sample marker tanah (opsional)
+    const sampleMarkers = [
+      { nama: "Kebun H. Ali", lat: -8.5215, lng: 118.6560, status: "SUDAH JADI" },
+      { nama: "Tanah Warisan", lat: -8.5250, lng: 118.6602, status: "PROSES" },
+      { nama: "Lahan Pak RT", lat: -8.5195, lng: 118.6575, status: "SUDAH JADI" },
+      { nama: "Milik Desa", lat: -8.5270, lng: 118.6615, status: "BELUM DAFTAR" }
+    ];
+    sampleMarkers.forEach(m => {
+      let color = m.status === "SUDAH JADI" ? "#2ecc71" : (m.status === "PROSES" ? "#f39c12" : "#e74c3c");
+      let icon = L.divIcon({ html: `<div style="background:${color}; width:10px; height:10px; border-radius:50%; border:1.5px solid white;"></div>`, iconSize: [10,10] });
+      L.marker([m.lat, m.lng], { icon }).bindPopup(`<b>${m.nama}</b><br>Status: ${m.status}`).addTo(map);
+    });
+    
+    // Gambar semua garis jalan dari KML dengan warna MERAH
+    const allPolylines = extractAllPolylines(fullKmlString);
+    const boundsGroup = [];
+    allPolylines.forEach(points => {
+      const poly = L.polyline(points, { color: "#e74c3c", weight: 5, opacity: 0.9, lineJoin: "round" }).addTo(map);
+      boundsGroup.push(L.latLngBounds(points));
+    });
+    
+    // Fokus peta ke seluruh garis (jika ada)
+    if (boundsGroup.length > 0) {
+      const globalBounds = boundsGroup.reduce((acc, b) => acc.extend(b), boundsGroup[0]);
+      map.fitBounds(globalBounds, { padding: [40, 40] });
+    } else {
+      map.setView([-8.523889, 118.658279], 15);
+    }
+
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const targetId = this.getAttribute('href');
+        if (targetId === "#" || targetId === "") return;
+        const target = document.querySelector(targetId);
+        if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+      });
+    });
+    
+    // SweetAlert2 untuk demo
+    const swalScript = document.createElement('script');
+    swalScript.src = "https://cdn.jsdelivr.net/npm/sweetalert2@11";
+    swalScript.onload = () => {
+      document.getElementById('demoAccessBtn')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        Swal.fire({
+          title: 'Aplikasi SIAP-LEWAMORI',
+          html: 'Akses penuh aplikasi tersedia untuk perangkat desa dan masyarakat.<br>Silakan hubungi <strong>Admin Desa Sondosia</strong>.',
+          icon: 'info',
+          confirmButtonColor: '#f39c12',
+          background: '#1e2a36',
+          color: '#fff'
+        });
+      });
+    };
+    document.head.appendChild(swalScript);
+  </script>
+</body>
+</html>
