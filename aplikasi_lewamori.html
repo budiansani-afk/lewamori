@@ -79,6 +79,10 @@
         #rekap table { min-width: 800px; width: 100%; border-collapse: collapse; }
         #rekap th, #rekap td { padding: 0.75rem; vertical-align: top; border-bottom: 1px solid #e0e0e0; word-break: break-word; }
         #rekap th { background: #f39c12; color: white; position: sticky; top: 0; font-weight: 700; }
+        #rekap td:nth-child(3), #rekap td:nth-child(5), #rekap td:nth-child(6), #rekap td:nth-child(7) { text-align: right; }
+        #rekap td:nth-child(1), #rekap td:nth-child(8) { text-align: center; }
+        #rekap th:nth-child(3), #rekap th:nth-child(5), #rekap th:nth-child(6), #rekap th:nth-child(7) { text-align: right; }
+        #rekap th:nth-child(1), #rekap th:nth-child(8) { text-align: center; }
         #rekap td:nth-child(2) { min-width: 150px; max-width: 250px; }
         #rekap td:nth-child(10) { min-width: 150px; max-width: 250px; }
         .photo-thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 12px; margin: 4px; border: 2px solid #3498db; cursor: pointer; }
@@ -89,6 +93,7 @@
         .log-table-wrapper { overflow-x: auto; max-height: 60vh; border-radius: 1rem; width: 100%; }
         .log-table { width: 100%; border-collapse: collapse; }
         .log-table th, .log-table td { padding: 0.75rem; border-bottom: 1px solid #e0e0e0; text-align: left; word-break: break-word; }
+        .log-table th:nth-child(4), .log-table td:nth-child(4) { min-width: 160px; white-space: normal; word-break: normal; }
         .status-badge { padding: 0.2rem 0.7rem; border-radius: 999px; font-size: 0.75rem; font-weight: bold; display: inline-block; }
         .status-sudah { background: #2ecc71; color: white; }
         .status-proses { background: #f39c12; color: white; }
@@ -170,7 +175,7 @@
             <div id="master" class="page-section hidden space-y-5">
                 <div class="card-lewa p-5">
                     <h2 class="text-xl font-bold mb-4 text-jalan-oranye form-title"><i class="fas fa-edit"></i> Kelola Sertipikasi Tanah</h2>
-                    <form id="tanahForm" class="grid grid-cols-1 gap-5">
+                    <form id="tanahForm" class="grid grid-cols-1 md:grid-cols-3 gap-5">
                         <input type="hidden" id="editId">
                         <div><label class="text-xs font-bold">Nama Pemegang Hak *</label><input id="nama" class="w-full p-2 rounded-xl bg-white/70 border border-jalan-biru" required></div>
                         <div><label class="text-xs font-bold">Hak Milik No.</label><input id="hakMilik" class="w-full p-2 rounded-xl bg-white/70 border border-jalan-biru"></div>
@@ -181,17 +186,22 @@
                         <div><label class="text-xs font-bold">Yang Mengambil Sertipikat</label><input id="pengambil" class="w-full p-2 rounded-xl bg-white/70 border border-jalan-biru"></div>
                         <div><label class="text-xs font-bold">Latitude</label><input id="latitude" type="number" step="any" placeholder="-8.5042" class="w-full p-2 rounded-xl bg-white/70 border border-jalan-biru"></div>
                         <div><label class="text-xs font-bold">Longitude</label><input id="longitude" type="number" step="any" placeholder="118.7078" class="w-full p-2 rounded-xl bg-white/70 border border-jalan-biru"></div>
-                        <div><label class="text-xs font-bold">Catatan</label><textarea id="catatan" rows="2" class="w-full p-2 rounded-xl bg-white/70 border border-jalan-biru"></textarea></div>
-                        <div class="border-t pt-3">
-                            <div class="flex flex-wrap gap-2"><button type="button" id="btnUploadMultiple" class="bg-jalan-hijau hover:bg-green-600 text-white px-4 py-2 rounded-xl text-sm shadow"><i class="fas fa-cloud-upload-alt"></i> Unggah Foto</button><button type="button" id="btnOpenCameraModal" class="bg-jalan-biru hover:bg-blue-600 text-white px-4 py-2 rounded-xl text-sm shadow"><i class="fas fa-camera"></i> Kamera</button></div>
+                        <div class="md:col-span-3"><label class="text-xs font-bold">Catatan</label><textarea id="catatan" rows="2" class="w-full p-2 rounded-xl bg-white/70 border border-jalan-biru"></textarea></div>
+                        <div class="md:col-span-3 border-t pt-3">
+                            <div class="flex flex-wrap justify-between items-center gap-4">
+                                <div class="flex gap-2">
+                                    <button type="button" id="btnUploadMultiple" class="bg-jalan-hijau hover:bg-green-600 text-white px-4 py-2 rounded-xl text-sm shadow"><i class="fas fa-cloud-upload-alt"></i> Unggah Foto</button>
+                                    <button type="button" id="btnOpenCameraModal" class="bg-jalan-biru hover:bg-blue-600 text-white px-4 py-2 rounded-xl text-sm shadow"><i class="fas fa-camera"></i> Kamera</button>
+                                </div>
+                                <div class="flex gap-3">
+                                    <button type="submit" class="form-btn form-btn-save"><i class="fas fa-save"></i> Simpan Data</button>
+                                    <button type="button" id="cancelFormBtn" class="form-btn bg-gray-200 hover:bg-gray-300 hidden"><i class="fas fa-times"></i> Batal</button>
+                                    <button type="button" id="resetFormBtn" class="form-btn bg-yellow-200 hover:bg-yellow-300"><i class="fas fa-eraser"></i> Reset</button>
+                                </div>
+                            </div>
                             <div id="multiPreview" class="flex flex-wrap gap-2 mt-3"></div>
                             <input type="hidden" id="existingPhotoUrls" value="[]">
                             <input type="file" id="uploadFileInput" multiple accept="image/*" class="hidden">
-                        </div>
-                        <div class="flex gap-3 flex-wrap">
-                            <button type="submit" class="form-btn form-btn-save"><i class="fas fa-save"></i> Simpan Data</button>
-                            <button type="button" id="cancelFormBtn" class="form-btn bg-gray-200 hover:bg-gray-300"><i class="fas fa-times"></i> Batal</button>
-                            <button type="button" id="resetFormBtn" class="form-btn bg-yellow-200 hover:bg-yellow-300"><i class="fas fa-eraser"></i> Reset</button>
                         </div>
                     </form>
                 </div>
@@ -222,7 +232,6 @@
                             <option value="roadmap">Peta Jalan</option>
                         </select>
                     </div>
-                    <!-- Legenda warna titik -->
                     <div class="map-legend">
                         <span><i class="fas fa-circle" style="color: #27ae60;"></i> Sudah Jadi</span>
                         <span><i class="fas fa-circle" style="color: #f39c12;"></i> Proses</span>
@@ -251,10 +260,7 @@
                     <div class="log-table-wrapper">
                         <table class="log-table">
                             <thead class="bg-jalan-biru">
-                                <tr>
-                                    <th class="text-white w-10"><input type="checkbox" id="selectAllLogs"></th>
-                                    <th class="text-white">Waktu</th><th class="text-white">Pengguna</th><th class="text-white">Aksi</th><th class="text-white">Detail</th>
-                                </tr>
+                                <tr><th class="text-white w-10"><input type="checkbox" id="selectAllLogs"></th><th class="text-white">Waktu</th><th class="text-white">Pengguna</th><th class="text-white">Aksi</th><th class="text-white">Detail</th></tr>
                             </thead>
                             <tbody id="logTable"></tbody>
                         </table>
@@ -278,58 +284,32 @@
         const API_SECRET = "17j1h0HMoBTG8LUpX3k7gnjDuH0";
         const DESA_TETAP = "Sondosia";
         
-        // ======================== DATA KML GARIS JALAN LEWAMORI (WARNA MERAH) ========================
         const kmlJalanString = `<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
-<Document>
-  <Placemark>
-    <MultiGeometry>
-      <LineString><coordinates>118.6748639671282,-8.518857560656391,1 118.66822192,-8.520665409999999,1 118.66808649,-8.520706669999999,1 118.66795171,-8.520749990000001,1 118.66781761,-8.52079537,1 118.66768423,-8.52084279,1 118.6675516,-8.520892249999999,1 118.66741974,-8.520943730000001,1 118.6672887,-8.52099722,1 118.6671585,-8.5210527,1 118.66702917,-8.521110180000001,1 118.66690074,-8.52116962,1 118.66677324,-8.52123102,1 118.66664671,-8.521294360000001,1 118.66652117,-8.521359629999999,1 118.66639665,-8.52142682,1 118.66627318,-8.5214959,1 118.66615079,-8.52156686,1 118.66602952,-8.52163968,1 118.66590938,-8.52171435,1</coordinates></LineString>
-      <LineString><coordinates>118.6749050866405,-8.519022086550702,1 118.66829964,-8.52092539,1 118.66816821,-8.52096542,1 118.66803742,-8.521007470000001,1 118.66790729,-8.5210515,1 118.66777785,-8.52109752,1 118.66764914,-8.521145519999999,1 118.66752118,-8.521195479999999,1 118.66739401,-8.521247389999999,1 118.66726765,-8.521301230000001,1 118.66714215,-8.521357009999999,1 118.66701751,-8.52141469,1 118.66689379,-8.52147428,1 118.66677099,-8.52153575,1 118.66664916,-8.52159909,1 118.66652832,-8.52166429,1 118.6664085,-8.52173133,1 118.66628973,-8.52180019,1 118.66617204,-8.52187086,1 118.66605545,-8.52194332,1</coordinates></LineString>
-      <LineString><coordinates>118.67557129,-8.51629958,1 118.67640318,-8.51633651,1</coordinates></LineString>
-      <LineString><coordinates>118.67667371,-8.52045266,1 118.67670532,-8.520454969999999,1 118.67673657,-8.52045732,1 118.67676755,-8.52045976,1 118.67679824,-8.520462370000001,1 118.67682863,-8.52046518,1 118.6768587,-8.520468259999999,1 118.67688846,-8.52047166,1 118.67691789,-8.52047542,1 118.67694697,-8.5204796,1 118.67697568,-8.52048424,1</coordinates></LineString>
-      <LineString><coordinates>118.67667371,-8.52045266,1 118.6761343,-8.520413380000001,1</coordinates></LineString>
-      <LineString><coordinates>118.67501945,-8.51867551,1 118.67501513,-8.51866149,1 118.67501072,-8.518647489999999,1 118.67500624,-8.518633510000001,1 118.67500168,-8.518619559999999,1 118.67499703,-8.518605640000001,1 118.67499231,-8.51859174,1 118.6749875,-8.51857788,1 118.67498261,-8.518564039999999,1 118.67497765,-8.51855022,1 118.6749726,-8.51853644,1 118.67496747,-8.518522689999999,1 118.67496226,-8.51850896,1 118.67495698,-8.518495270000001,1 118.67495161,-8.518481599999999,1 118.67494617,-8.51846797,1 118.67494064,-8.518454370000001,1 118.67493504,-8.5184408,1 118.67492936,-8.518427259999999,1 118.6749236,-8.51841376,1</coordinates></LineString>
-      <LineString><coordinates>118.67474939,-8.517933960000001,1 118.67462922,-8.51765449,1</coordinates></LineString>
-      <LineString><coordinates>118.67517028,-8.519605090000001,1 118.6751731,-8.5196284,1 118.6751784,-8.519664410000001,1 118.67518508,-8.51970083,1 118.67519334,-8.51973763,1</coordinates></LineString>
-      <LineString><coordinates>118.67519334,-8.51973763,1 118.67520597,-8.519783350000001,1 118.67522108,-8.519828309999999,1 118.67523864,-8.519872380000001,1 118.6752586,-8.51991544,1 118.67528088,-8.519957339999999,1 118.67530543,-8.51999797,1 118.67533217,-8.52003721,1 118.67536102,-8.52007493,1 118.6753919,-8.520111030000001,1 118.67542472,-8.520145400000001,1 118.67545937,-8.520177929999999,1 118.67549575,-8.52020853,1 118.67553375,-8.520237099999999,1 118.67557327,-8.520263569999999,1 118.67561418,-8.520287850000001,1 118.67565636,-8.52030987,1 118.67569969,-8.52032956,1 118.67574403,-8.520346869999999,1 118.67578925,-8.520361749999999,1</coordinates></LineString>
-      <LineString><coordinates>118.6761343,-8.520413380000001,1 118.67610238,-8.520411040000001,1 118.67606969,-8.520408489999999,1 118.67603644,-8.520405609999999,1 118.67600259,-8.52040223,1 118.67596818,-8.520398180000001,1 118.67593324,-8.5203933,1 118.67589781,-8.52038741,1 118.67586196,-8.52038031,1 118.67582575,-8.52037183,1 118.67578925,-8.520361749999999,1</coordinates></LineString>
-      <LineString><coordinates>118.67557129,-8.51629958,1 118.67553932,-8.516298190000001,1 118.67550655,-8.5162969,1 118.67547319,-8.516295879999999,1 118.67543918,-8.51629528,1 118.67540453,-8.51629528,1 118.67536926,-8.51629604,1 118.67533338,-8.51629776,1 118.67529694,-8.516300620000001,1 118.67525999,-8.51630482,1 118.67522255,-8.51631057,1</coordinates></LineString>
-      <LineString><coordinates>118.67522255,-8.51631057,1 118.67515164,-8.516326039999999,1 118.67508227,-8.516347339999999,1 118.67501492,-8.516374300000001,1 118.67495006,-8.51640675,1 118.67488813,-8.516444460000001,1 118.67482957,-8.516487160000001,1 118.67477478,-8.516534569999999,1 118.67472414,-8.516586350000001,1 118.67467801,-8.51664214,1 118.67463669,-8.51670156,1 118.67460049,-8.51676419,1 118.67456964,-8.51682961,1 118.67454436,-8.516897350000001,1 118.67452484,-8.51696695,1 118.6745112,-8.517037930000001,1 118.67450353,-8.517109789999999,1 118.6745019,-8.51718204,1 118.67450631,-8.517254169999999,1 118.67451673,-8.51732569,1</coordinates></LineString>
-      <LineString><coordinates>118.67462922,-8.51765449,1 118.67461665,-8.51762519,1 118.6746039,-8.51759511,1 118.67459119,-8.51756439,1 118.67457865,-8.51753291,1 118.67456645,-8.517500630000001,1 118.67455474,-8.51746749,1 118.67454372,-8.517433459999999,1 118.67453358,-8.517398500000001,1 118.67452451,-8.517362589999999,1 118.67451673,-8.51732569,1</coordinates></LineString>
-      <LineString><coordinates>118.67510849,-8.5191249,1 118.67517544,-8.51964525,1</coordinates></LineString>
-      <LineString><coordinates>118.67492221,-8.518410250000001,1 118.67474802,-8.5179305,1</coordinates></LineString>
-      <LineString><coordinates>118.66605545,-8.52194332,1 118.66522663,-8.522467300000001,1</coordinates></LineString>
-      <LineString><coordinates>118.66590938,-8.52171435,1 118.66508056,-8.52223833,1</coordinates></LineString>
-      <LineString><coordinates>118.65188471,-8.521672349999999,1 118.65960854,-8.523430319999999,1</coordinates></LineString>
-      <LineString><coordinates>118.65194545,-8.521407930000001,1 118.65966927,-8.5231659,1</coordinates></LineString>
-      <LineString><coordinates>118.65139839,-8.52080885,1 118.65140281,-8.52079518,1</coordinates></LineString>
-      <LineString><coordinates>118.6516412,-8.52088419,1 118.65164242,-8.52088041,1</coordinates></LineString>
-      <LineString><coordinates>118.65960854,-8.523430319999999,1 118.65991013,-8.52349242,1 118.66021406,-8.52354197,1 118.6605198,-8.5235789,1 118.66082681,-8.523603140000001,1 118.66113457,-8.52361464,1 118.66144255,-8.52361338,1 118.6617502,-8.52359938,1 118.66205701,-8.52357265,1 118.66236243,-8.52353323,1 118.66266594,-8.52348121,1 118.66296701,-8.523416660000001,1 118.66326513,-8.523339699999999,1 118.66355977,-8.52325046,1 118.66385043,-8.523149099999999,1 118.6641366,-8.52303579,1 118.66441779,-8.52291073,1 118.66469351,-8.52277413,1 118.66496328,-8.522626239999999,1 118.66522664,-8.522467300000001,1</coordinates></LineString>
-      <LineString><coordinates>118.65966927,-8.5231659,1 118.65995976,-8.52322571,1 118.6602525,-8.523273440000001,1 118.66054698,-8.52330901,1 118.6608427,-8.52333235,1 118.66113913,-8.523343430000001,1 118.66143577,-8.52334222,1 118.6617321,-8.523328729999999,1 118.66202761,-8.52330298,1 118.66232179,-8.52326502,1 118.66261413,-8.52321491,1 118.66290412,-8.52315274,1 118.66319126,-8.523078610000001,1 118.66347505,-8.52299266,1 118.66375501,-8.522895030000001,1 118.66403065,-8.52278589,1 118.66430149,-8.52266543,1 118.66456706,-8.522533859999999,1 118.6648269,-8.522391409999999,1 118.66508056,-8.52223832,1</coordinates></LineString>
-      <LineString><coordinates>118.65119918,-8.52224915,1 118.65127139,-8.522015469999999,1</coordinates></LineString>
-      <LineString><coordinates>118.65098215,-8.522182689999999,1 118.65105458,-8.521948289999999,1</coordinates></LineString>
-      <LineString><coordinates>118.65188471,-8.52167236,1 118.65187693,-8.52167083,1 118.65186908,-8.521669770000001,1 118.65186117,-8.521669190000001,1 118.65185324,-8.52166907,1 118.65184532,-8.52166944,1 118.65183744,-8.52167028,1 118.65182962,-8.52167158,1 118.6518219,-8.521673359999999,1 118.65181429,-8.521675589999999,1 118.65180684,-8.52167828,1 118.65179956,-8.5216814,1 118.65179248,-8.52168496,1 118.65178563,-8.521688940000001,1 118.65177904,-8.52169331,1 118.65177272,-8.52169808,1 118.6517667,-8.52170321,1 118.651761,-8.5217087,1 118.65175564,-8.52171452,1 118.65175065,-8.52172064,1</coordinates></LineString>
-      <LineString><coordinates>118.6513889,-8.52192031,1 118.65141116,-8.52191775,1 118.65143327,-8.52191423,1 118.65145522,-8.521909750000001,1 118.65147694,-8.52190433,1 118.65149841,-8.52189798,1 118.65151959,-8.5218907,1 118.65154042,-8.52188252,1 118.65156088,-8.52187344,1 118.65158092,-8.52186348,1 118.65160051,-8.521852669999999,1 118.65161961,-8.52184102,1 118.65163818,-8.521828559999999,1 118.65165619,-8.5218153,1 118.65167361,-8.52180128,1 118.6516904,-8.521786519999999,1 118.65170652,-8.521771040000001,1 118.65172196,-8.52175488,1 118.65173668,-8.52173808,1 118.65175065,-8.52172064,1</coordinates></LineString>
-      <LineString><coordinates>118.65128681,-8.52089915,1 118.65122416,-8.520909639999999,1 118.65116328,-8.52092773,1 118.6511051,-8.520953130000001,1 118.6510505,-8.52098546,1 118.65100031,-8.521024239999999,1 118.6509553,-8.521068870000001,1 118.65091614,-8.52111867,1 118.65088343,-8.52117288,1 118.65085767,-8.5212307,1 118.65083925,-8.52129122,1 118.65082846,-8.521353550000001,1 118.65082544,-8.52141672,1 118.65083026,-8.52147978,1 118.65084283,-8.521541770000001,1 118.65086296,-8.52160175,1 118.65089036,-8.521658820000001,1 118.6509246,-8.521712089999999,1 118.65096516,-8.521760759999999,1 118.65101143,-8.521804100000001,1</coordinates></LineString>
-      <LineString><coordinates>118.65184578,-8.52130644,1 118.65184194,-8.52128929,1 118.65183752,-8.52127228,1 118.65183251,-8.52125543,1 118.65182692,-8.52123877,1 118.65182077,-8.5212223,1 118.65181405,-8.52120605,1 118.65180678,-8.52119004,1 118.65179896,-8.521174289999999,1 118.6517906,-8.521158809999999,1 118.65178172,-8.521143629999999,1 118.65177232,-8.521128750000001,1 118.65176241,-8.52111421,1 118.65175201,-8.52110002,1 118.65174113,-8.521086179999999,1 118.65172977,-8.52107273,1 118.65171797,-8.52105967,1 118.65170571,-8.521047019999999,1 118.65169304,-8.521034800000001,1 118.65167994,-8.52102301,1</coordinates></LineString>
-      <LineString><coordinates>118.6513889,-8.52192031,1 118.65138052,-8.52192136,1 118.65137221,-8.52192292,1 118.65136402,-8.52192499,1 118.65135597,-8.52192756,1 118.6513481,-8.521930619999999,1 118.65134043,-8.521934160000001,1 118.651333,-8.52193817,1 118.65132583,-8.52194263,1 118.65131896,-8.52194753,1 118.6513124,-8.521952840000001,1 118.65130619,-8.52195854,1 118.65130034,-8.52196462,1 118.65129489,-8.521971049999999,1 118.65128984,-8.5219778,1 118.65128522,-8.52198484,1 118.65128106,-8.521992170000001,1 118.65127735,-8.521999729999999,1 118.65127413,-8.52200751,1 118.65127139,-8.522015469999999,1</coordinates></LineString>
-      <LineString><coordinates>118.65105458,-8.521948289999999,1 118.65105681,-8.5219402,1 118.65105853,-8.52193198,1 118.65105974,-8.52192367,1 118.65106043,-8.521915310000001,1 118.6510606,-8.521906919999999,1 118.65106024,-8.52189853,1 118.65105937,-8.521890190000001,1 118.65105798,-8.521881909999999,1 118.65105608,-8.521873729999999,1 118.65105367,-8.52186569,1 118.65105077,-8.52185781,1 118.65104738,-8.52185012,1 118.65104352,-8.521842660000001,1 118.65103921,-8.521835449999999,1 118.65103446,-8.52182852,1 118.65102928,-8.52182189,1 118.6510237,-8.5218156,1 118.65101775,-8.521809660000001,1 118.65101143,-8.521804100000001,1</coordinates></LineString>
-      <LineString><coordinates>118.6516412,-8.52088419,1 118.65163897,-8.52089191,1 118.65163722,-8.520899740000001,1 118.65163595,-8.52090767,1 118.65163518,-8.52091566,1 118.65163489,-8.520923679999999,1 118.6516351,-8.520931709999999,1 118.65163581,-8.5209397,1 118.651637,-8.520947639999999,1 118.65163868,-8.52095549,1 118.65164084,-8.52096323,1 118.65164347,-8.52097081,1 118.65164656,-8.520978230000001,1 118.6516501,-8.52098544,1 118.65165408,-8.520992420000001,1 118.65165848,-8.52099915,1 118.65166328,-8.52100559,1 118.65166848,-8.52101173,1 118.65167404,-8.52101755,1 118.65167994,-8.52102301,1</coordinates></LineString>
-      <LineString><coordinates>118.65128681,-8.52089915,1 118.65129474,-8.520898069999999,1 118.65130259,-8.520896520000001,1 118.65131033,-8.520894500000001,1 118.65131794,-8.520892010000001,1 118.65132537,-8.52088906,1 118.65133262,-8.52088567,1 118.65133964,-8.52088185,1 118.65134642,-8.520877609999999,1 118.65135293,-8.520872969999999,1 118.65135914,-8.52086794,1 118.65136503,-8.52086255,1 118.65137059,-8.52085681,1 118.65137578,-8.52085074,1 118.65138059,-8.52084438,1 118.65138501,-8.52083773,1 118.65138901,-8.52083083,1 118.65139259,-8.520823699999999,1 118.65139572,-8.52081636,1 118.6513984,-8.52080885,1</coordinates></LineString>
-      <LineString><coordinates>118.65184578,-8.52130644,1 118.65184761,-8.52131412,1 118.65184989,-8.52132168,1 118.65185263,-8.52132909,1 118.65185581,-8.521336310000001,1 118.65185942,-8.52134334,1 118.65186345,-8.521350139999999,1 118.65186789,-8.52135668,1 118.65187271,-8.521362939999999,1 118.6518779,-8.52136891,1 118.65188344,-8.521374550000001,1 118.65188931,-8.521379850000001,1 118.65189549,-8.521384790000001,1 118.65190196,-8.52138935,1 118.6519087,-8.52139352,1 118.65191567,-8.52139727,1 118.65192286,-8.5214006,1 118.65193024,-8.5214035,1 118.65193777,-8.521405939999999,1 118.65194545,-8.521407930000001,1</coordinates></LineString>
-      <LineString><coordinates>118.6514785,-8.52062387,1 118.65159839,-8.520414499999999,1</coordinates></LineString>
-      <LineString><coordinates>118.6516826,-8.52068109,1 118.6517035,-8.52043814,1</coordinates></LineString>
-      <LineString><coordinates>118.6514785,-8.52062387,1 118.65147364,-8.520632470000001,1 118.65146887,-8.52064113,1 118.6514642,-8.52064983,1 118.65145962,-8.520658579999999,1 118.65145514,-8.520667380000001,1 118.65145076,-8.520676229999999,1 118.65144647,-8.52068513,1 118.65144229,-8.520694069999999,1 118.6514382,-8.520703060000001,1 118.65143421,-8.52071209,1 118.65143031,-8.52072117,1 118.65142652,-8.52073028,1 118.65142283,-8.52073944,1 118.65141924,-8.520748640000001,1 118.65141575,-8.520757870000001,1 118.65141236,-8.520767149999999,1 118.65140907,-8.52077646,1 118.65140589,-8.520785800000001,1 118.65140281,-8.52079518,1</coordinates></LineString>
-      <LineString><coordinates>118.65164242,-8.52088041,1 118.65164565,-8.520870179999999,1 118.65164876,-8.52085991,1 118.65165175,-8.520849610000001,1 118.65165461,-8.520839280000001,1 118.65165736,-8.520828910000001,1 118.65165997,-8.52081851,1 118.65166247,-8.52080808,1 118.65166484,-8.52079762,1 118.65166708,-8.52078713,1 118.6516692,-8.520776619999999,1 118.65167119,-8.52076608,1 118.65167306,-8.52075552,1 118.6516748,-8.52074494,1 118.65167642,-8.520734340000001,1 118.65167791,-8.520723719999999,1 118.65167927,-8.52071308,1 118.65168051,-8.52070243,1 118.65168162,-8.520691770000001,1 118.6516826,-8.52068109,1</coordinates></LineString>
-      <LineString><coordinates>118.67493651,-8.519011559999999,1 118.67489814,-8.519022290000001,1</coordinates></LineString>
-      <LineString><coordinates>118.67492593,-8.51884547,1 118.67485392,-8.518865610000001,1</coordinates></LineString>
-      <LineString><coordinates>118.67492593,-8.51884547,1 118.67493678,-8.51884194,1 118.67494729,-8.51883752,1 118.67495739,-8.51883224,1 118.67496701,-8.51882614,1 118.67497609,-8.518819260000001,1 118.67498455,-8.51881165,1 118.67499235,-8.51880336,1 118.67499942,-8.51879445,1 118.67500572,-8.51878498,1 118.6750112,-8.51877502,1 118.67501583,-8.51876463,1 118.67501956,-8.5187539,1 118.67502238,-8.518742899999999,1 118.67502427,-8.5187317,1 118.67502521,-8.51872038,1 118.67502519,-8.518709019999999,1 118.67502422,-8.51869771,1 118.6750223,-8.51868651,1 118.67501945,-8.51867551,1</coordinates></LineString>
-      <LineString><coordinates>118.67510849,-8.5191249,1 118.67510638,-8.51911282,1 118.67510318,-8.51910099,1 118.67509892,-8.519089490000001,1 118.67509364,-8.51907843,1 118.67508737,-8.51906788,1 118.67508017,-8.51905794,1 118.6750721,-8.519048679999999,1 118.67506323,-8.51904019,1 118.67505362,-8.51903253,1 118.67504335,-8.519025770000001,1 118.67503252,-8.51901996,1 118.6750212,-8.51901514,1 118.67500949,-8.51901136,1 118.67499748,-8.51900865,1 118.67498528,-8.51900702,1 118.67497298,-8.5190065,1 118.67496069,-8.519007090000001,1 118.67494849,-8.51900878,1 118.67493651,-8.519011559999999,1</coordinates></LineString>
-    </MultiGeometry>
-  </Placemark>
-</Document>
-</kml>`;
+<Document><Placemark><MultiGeometry><LineString><coordinates>118.6748639671282,-8.518857560656391,1 118.66822192,-8.520665409999999,1 118.66808649,-8.520706669999999,1 118.66795171,-8.520749990000001,1 118.66781761,-8.52079537,1 118.66768423,-8.52084279,1 118.6675516,-8.520892249999999,1 118.66741974,-8.520943730000001,1 118.6672887,-8.52099722,1 118.6671585,-8.5210527,1 118.66702917,-8.521110180000001,1 118.66690074,-8.52116962,1 118.66677324,-8.52123102,1 118.66664671,-8.521294360000001,1 118.66652117,-8.521359629999999,1 118.66639665,-8.52142682,1 118.66627318,-8.5214959,1 118.66615079,-8.52156686,1 118.66602952,-8.52163968,1 118.66590938,-8.52171435,1</coordinates></LineString>
+<LineString><coordinates>118.6749050866405,-8.519022086550702,1 118.66829964,-8.52092539,1 118.66816821,-8.52096542,1 118.66803742,-8.521007470000001,1 118.66790729,-8.5210515,1 118.66777785,-8.52109752,1 118.66764914,-8.521145519999999,1 118.66752118,-8.521195479999999,1 118.66739401,-8.521247389999999,1 118.66726765,-8.521301230000001,1 118.66714215,-8.521357009999999,1 118.66701751,-8.52141469,1 118.66689379,-8.52147428,1 118.66677099,-8.52153575,1 118.66664916,-8.52159909,1 118.66652832,-8.52166429,1 118.6664085,-8.52173133,1 118.66628973,-8.52180019,1 118.66617204,-8.52187086,1 118.66605545,-8.52194332,1</coordinates></LineString>
+<LineString><coordinates>118.67557129,-8.51629958,1 118.67640318,-8.51633651,1</coordinates></LineString>
+<LineString><coordinates>118.67667371,-8.52045266,1 118.67670532,-8.520454969999999,1 118.67673657,-8.52045732,1 118.67676755,-8.52045976,1 118.67679824,-8.520462370000001,1 118.67682863,-8.52046518,1 118.6768587,-8.520468259999999,1 118.67688846,-8.52047166,1 118.67691789,-8.52047542,1 118.67694697,-8.5204796,1 118.67697568,-8.52048424,1</coordinates></LineString>
+<LineString><coordinates>118.67667371,-8.52045266,1 118.6761343,-8.520413380000001,1</coordinates></LineString>
+<LineString><coordinates>118.67501945,-8.51867551,1 118.67501513,-8.51866149,1 118.67501072,-8.518647489999999,1 118.67500624,-8.518633510000001,1 118.67500168,-8.518619559999999,1 118.67499703,-8.518605640000001,1 118.67499231,-8.51859174,1 118.6749875,-8.51857788,1 118.67498261,-8.518564039999999,1 118.67497765,-8.51855022,1 118.6749726,-8.51853644,1 118.67496747,-8.518522689999999,1 118.67496226,-8.51850896,1 118.67495698,-8.518495270000001,1 118.67495161,-8.518481599999999,1 118.67494617,-8.51846797,1 118.67494064,-8.518454370000001,1 118.67493504,-8.5184408,1 118.67492936,-8.518427259999999,1 118.6749236,-8.51841376,1</coordinates></LineString>
+<LineString><coordinates>118.67474939,-8.517933960000001,1 118.67462922,-8.51765449,1</coordinates></LineString>
+<LineString><coordinates>118.67517028,-8.519605090000001,1 118.6751731,-8.5196284,1 118.6751784,-8.519664410000001,1 118.67518508,-8.51970083,1 118.67519334,-8.51973763,1</coordinates></LineString>
+<LineString><coordinates>118.67519334,-8.51973763,1 118.67520597,-8.519783350000001,1 118.67522108,-8.519828309999999,1 118.67523864,-8.519872380000001,1 118.6752586,-8.51991544,1 118.67528088,-8.519957339999999,1 118.67530543,-8.51999797,1 118.67533217,-8.52003721,1 118.67536102,-8.52007493,1 118.6753919,-8.520111030000001,1 118.67542472,-8.520145400000001,1 118.67545937,-8.520177929999999,1 118.67549575,-8.52020853,1 118.67553375,-8.520237099999999,1 118.67557327,-8.520263569999999,1 118.67561418,-8.520287850000001,1 118.67565636,-8.52030987,1 118.67569969,-8.52032956,1 118.67574403,-8.520346869999999,1 118.67578925,-8.520361749999999,1</coordinates></LineString>
+<LineString><coordinates>118.6761343,-8.520413380000001,1 118.67610238,-8.520411040000001,1 118.67606969,-8.520408489999999,1 118.67603644,-8.520405609999999,1 118.67600259,-8.52040223,1 118.67596818,-8.520398180000001,1 118.67593324,-8.5203933,1 118.67589781,-8.52038741,1 118.67586196,-8.52038031,1 118.67582575,-8.52037183,1 118.67578925,-8.520361749999999,1</coordinates></LineString>
+<LineString><coordinates>118.67557129,-8.51629958,1 118.67553932,-8.516298190000001,1 118.67550655,-8.5162969,1 118.67547319,-8.516295879999999,1 118.67543918,-8.51629528,1 118.67540453,-8.51629528,1 118.67536926,-8.51629604,1 118.67533338,-8.51629776,1 118.67529694,-8.516300620000001,1 118.67525999,-8.51630482,1 118.67522255,-8.51631057,1</coordinates></LineString>
+<LineString><coordinates>118.67522255,-8.51631057,1 118.67515164,-8.516326039999999,1 118.67508227,-8.516347339999999,1 118.67501492,-8.516374300000001,1 118.67495006,-8.51640675,1 118.67488813,-8.516444460000001,1 118.67482957,-8.516487160000001,1 118.67477478,-8.516534569999999,1 118.67472414,-8.516586350000001,1 118.67467801,-8.51664214,1 118.67463669,-8.51670156,1 118.67460049,-8.51676419,1 118.67456964,-8.51682961,1 118.67454436,-8.516897350000001,1 118.67452484,-8.51696695,1 118.6745112,-8.517037930000001,1 118.67450353,-8.517109789999999,1 118.6745019,-8.51718204,1 118.67450631,-8.517254169999999,1 118.67451673,-8.51732569,1</coordinates></LineString>
+<LineString><coordinates>118.67462922,-8.51765449,1 118.67461665,-8.51762519,1 118.6746039,-8.51759511,1 118.67459119,-8.51756439,1 118.67457865,-8.51753291,1 118.67456645,-8.517500630000001,1 118.67455474,-8.51746749,1 118.67454372,-8.517433459999999,1 118.67453358,-8.517398500000001,1 118.67452451,-8.517362589999999,1 118.67451673,-8.51732569,1</coordinates></LineString>
+<LineString><coordinates>118.67510849,-8.5191249,1 118.67517544,-8.51964525,1</coordinates></LineString>
+<LineString><coordinates>118.67492221,-8.518410250000001,1 118.67474802,-8.5179305,1</coordinates></LineString>
+<LineString><coordinates>118.66605545,-8.52194332,1 118.66522663,-8.522467300000001,1</coordinates></LineString>
+<LineString><coordinates>118.66590938,-8.52171435,1 118.66508056,-8.52223833,1</coordinates></LineString>
+<LineString><coordinates>118.65188471,-8.521672349999999,1 118.65960854,-8.523430319999999,1</coordinates></LineString>
+<LineString><coordinates>118.65194545,-8.521407930000001,1 118.65966927,-8.5231659,1</coordinates></LineString>
+<LineString><coordinates>118.65139839,-8.52080885,1 118.65140281,-8.52079518,1</coordinates></LineString>
+<LineString><coordinates>118.6516412,-8.52088419,1 118.65164242,-8.52088041,1</coordinates></LineString>
+<LineString><coordinates>118.65960854,-8.523430319999999,1 118.65991013,-8.52349242,1 118.66021406,-8.52354197,1 118.6605198,-8.5235789,1 118.66082681,-8.523603140000001,1 118.66113457,-8.52361464,1 118.66144255,-8.52361338,1 118.6617502,-8.52359938,1 118.66205701,-8.52357265,1 118.66236243,-8.52353323,1 118.66266594,-8.52348121,1 118.66296701,-8.523416660000001,1 118.66326513,-8.523339699999999,1 118.66355977,-8.52325046,1 118.66385043,-8.523149099999999,1 118.6641366,-8.52303579,1 118.66441779,-8.52291073,1 118.66469351,-8.52277413,1 118.66496328,-8.522626239999999,1 118.66522664,-8.522467300000001,1</coordinates></LineString>
+<LineString><coordinates>118.65966927,-8.5231659,1 118.65995976,-8.52322571,1 118.6602525,-8.523273440000001,1 118.66054698,-8.52330901,1 118.6608427,-8.52333235,1 118.66113913,-8.523343430000001,1 118.66143577,-8.52334222,1 118.6617321,-8.523328729999999,1 118.66202761,-8.52330298,1 118.66232179,-8.52326502,1 118.66261413,-8.52321491,1 118.66290412,-8.52315274,1 118.66319126,-8.523078610000001,1 118.66347505,-8.52299266,1 118.66375501,-8.522895030000001,1 118.66403065,-8.52278589,1 118.66430149,-8.52266543,1 118.66456706,-8.522533859999999,1 118.6648269,-8.522391409999999,1 118.66508056,-8.52223832,1</coordinates></LineString>
+</MultiGeometry></Placemark></Document></kml>`;
         
         function addJalanLayerFromKML(mapInstance, kmlString) {
             try {
@@ -351,62 +331,41 @@
                         }
                     }
                     if (latLngs.length > 1) {
-                        L.polyline(latLngs, {
-                            color: "#ff0000",
-                            weight: 4,
-                            opacity: 0.9,
-                            smoothFactor: 1
-                        }).bindPopup("<b>🛣️ Jalan Lewamori</b><br>Segmen jalan utama (Placemark KML)").addTo(mapInstance);
+                        L.polyline(latLngs, { color: "#ff0000", weight: 4, opacity: 0.9, smoothFactor: 1 }).bindPopup("<b>🛣️ Jalan Lewamori</b><br>Segmen jalan utama").addTo(mapInstance);
                     }
                 }
-                console.log("✅ Garis jalan KML berhasil ditambahkan (warna merah)");
-            } catch(e) {
-                console.error("❌ Gagal memuat garis jalan KML:", e);
-            }
+                console.log("✅ Garis jalan KML ditambahkan");
+            } catch(e) { console.error("❌ Gagal memuat KML:", e); }
         }
         
-        function getPublicIdFromUrl(url) {
-            const match = url.match(/\/upload\/(?:v\d+\/)?(.+?)\.(jpg|jpeg|png|gif)/);
-            if (match && match[1]) return match[1];
-            return null;
-        }
+        function getPublicIdFromUrl(url) { const match = url.match(/\/upload\/(?:v\d+\/)?(.+?)\.(jpg|jpeg|png|gif)/); return match ? match[1] : null; }
         
         async function deletePhotoFromCloudinary(photoUrl) {
             const publicId = getPublicIdFromUrl(photoUrl);
             if (!publicId) return false;
             const timestamp = Math.floor(Date.now() / 1000);
-            const signature = CryptoJS.SHA1(`public_id=${publicId}&timestamp=${timestamp}${API_SECRET}`).toString();
+            const signature = window.CryptoJS.SHA1(`public_id=${publicId}&timestamp=${timestamp}${API_SECRET}`).toString();
             const formData = new URLSearchParams();
             formData.append("public_id", publicId);
             formData.append("api_key", API_KEY);
             formData.append("timestamp", timestamp);
             formData.append("signature", signature);
             try {
-                const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/destroy`, {
-                    method: "POST",
-                    body: formData
-                });
+                const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/destroy`, { method: "POST", body: formData });
                 const result = await response.json();
                 return result.result === "ok";
-            } catch (err) {
-                return false;
-            }
+            } catch (err) { return false; }
         }
         
         async function uploadToCloudinary(file) {
-            let fd = new FormData(); 
-            fd.append("file", file); 
-            fd.append("upload_preset", UPLOAD_PRESET);
+            let fd = new FormData(); fd.append("file", file); fd.append("upload_preset", UPLOAD_PRESET);
             try {
                 let res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: "POST", body: fd });
                 if(!res.ok) throw new Error(`Upload gagal: ${res.status}`);
-                let data = await res.json(); 
-                return data.secure_url;
-            } catch(err) {
-                throw new Error("Gagal mengunggah foto ke Cloudinary.");
-            }
+                let data = await res.json(); return data.secure_url;
+            } catch(err) { throw new Error("Gagal mengunggah foto ke Cloudinary."); }
         }
-
+        
         let pendingImageFiles = [], existingPhotoUrls = [], deletedPhotoUrls = [];
         function refreshCompletePreview() {
             const container = document.getElementById('multiPreview'); container.innerHTML = '';
@@ -414,11 +373,7 @@
                 const wrapper = document.createElement('div'); wrapper.className = "relative inline-block";
                 const img = document.createElement('img'); img.src = url; img.className = "photo-thumb";
                 const removeBtn = document.createElement('button'); removeBtn.innerHTML = "×"; removeBtn.className = "absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 text-xs";
-                removeBtn.onclick = () => {
-                    deletedPhotoUrls.push(url);
-                    existingPhotoUrls.splice(idx, 1);
-                    refreshCompletePreview();
-                };
+                removeBtn.onclick = () => { deletedPhotoUrls.push(url); existingPhotoUrls.splice(idx, 1); refreshCompletePreview(); };
                 wrapper.appendChild(img); wrapper.appendChild(removeBtn); container.appendChild(wrapper);
             });
             pendingImageFiles.forEach((file, idx) => {
@@ -435,9 +390,7 @@
         let allData = [], unsubscribeSnapshot, map, markerLayer, currentUser = "";
         let highlightTimeout = null;
         
-        async function logDetail(aksi, detail, docId=null) { 
-            await addDoc(logRef, { waktu: new Date().toISOString(), pengguna: currentUser, aksi, detail }); 
-        }
+        async function logDetail(aksi, detail) { await addDoc(logRef, { waktu: new Date().toISOString(), pengguna: currentUser, aksi, detail }); }
         
         async function logEditChanges(oldData, newData, docId) {
             let changes = [];
@@ -445,18 +398,11 @@
             for (let field of fields) {
                 let oldVal = oldData[field] || "";
                 let newVal = newData[field] || "";
-                if (oldVal.toString() !== newVal.toString()) {
-                    changes.push(`${field}: dari "${oldVal}" menjadi "${newVal}"`);
-                }
+                if (oldVal.toString() !== newVal.toString()) changes.push(`${field}: dari "${oldVal}" menjadi "${newVal}"`);
             }
-            if (oldData.fotoUrls?.length !== newData.fotoUrls?.length) {
-                changes.push(`foto: ${oldData.fotoUrls?.length || 0} -> ${newData.fotoUrls?.length || 0} file`);
-            }
-            if (changes.length) {
-                await logDetail("EDIT", `Data ${newData.namaPemegangHak} diubah: ${changes.join('; ')}`);
-            } else {
-                await logDetail("EDIT", `Data ${newData.namaPemegangHak} tidak ada perubahan`);
-            }
+            if (oldData.fotoUrls?.length !== newData.fotoUrls?.length) changes.push(`foto: ${oldData.fotoUrls?.length || 0} -> ${newData.fotoUrls?.length || 0} file`);
+            if (changes.length) await logDetail("EDIT", `Data ${newData.namaPemegangHak} diubah: ${changes.join('; ')}`);
+            else await logDetail("EDIT", `Data ${newData.namaPemegangHak} tidak ada perubahan`);
         }
         
         function loadData() { if(unsubscribeSnapshot) unsubscribeSnapshot(); unsubscribeSnapshot = onSnapshot(query(tanahRef, orderBy("createdAt","desc")), snap => { allData = snap.docs.map(d=>({ id:d.id, ...d.data(), fotoUrls: d.data().fotoUrls || [] })); renderAll(); renderLog(); }); }
@@ -469,15 +415,7 @@
             let luasSudah = allData.filter(d=>d.status==="SUDAH JADI").reduce((s,d)=>s+(parseFloat(d.luasTanah)||0),0);
             let luasProses = allData.filter(d=>d.status==="PROSES").reduce((s,d)=>s+(parseFloat(d.luasTanah)||0),0);
             let luasBelum = allData.filter(d=>d.status==="BELUM DAFTAR").reduce((s,d)=>s+(parseFloat(d.luasTanah)||0),0);
-            
-            document.getElementById("statsContainer").innerHTML = `
-                <div class="card-lewa p-3 text-center stat-card" data-filter="all"><div class="text-3xl font-bold">${total}</div><div>Total Data</div><span class="tooltip">Jumlah seluruh sertipikat</span></div>
-                <div class="card-lewa p-3 text-center stat-card" data-filter="sudah"><div class="text-3xl font-bold text-green-600">${sudahl}</div><div>Sudah Jadi</div><span class="tooltip">Sertipikat yang sudah terbit</span></div>
-                <div class="card-lewa p-3 text-center stat-card" data-filter="proses"><div class="text-3xl font-bold text-orange-500">${proses}</div><div>Proses</div><span class="tooltip">Sertipikat dalam proses</span></div>
-                <div class="card-lewa p-3 text-center stat-card" data-filter="belum"><div class="text-3xl font-bold text-red-500">${belum}</div><div>Belum Daftar</div><span class="tooltip">Belum terdaftar</span></div>
-                <div class="card-lewa p-3 text-center stat-card" data-filter="diambil"><div class="text-3xl font-bold text-blue-600">${diambil}</div><div>Diambil</div><span class="tooltip">Sertipikat sudah diambil pemilik</span></div>
-                <div class="card-lewa p-3 text-center"><div class="text-3xl font-bold text-orange-600">${totalLuas.toLocaleString()} m²</div><div>Total Luas</div><span class="tooltip">Total luas tanah (m²)</span></div>`;
-            
+            document.getElementById("statsContainer").innerHTML = `<div class="card-lewa p-3 text-center stat-card" data-filter="all"><div class="text-3xl font-bold">${total}</div><div>Total Data</div></div><div class="card-lewa p-3 text-center stat-card" data-filter="sudah"><div class="text-3xl font-bold text-green-600">${sudahl}</div><div>Sudah Jadi</div></div><div class="card-lewa p-3 text-center stat-card" data-filter="proses"><div class="text-3xl font-bold text-orange-500">${proses}</div><div>Proses</div></div><div class="card-lewa p-3 text-center stat-card" data-filter="belum"><div class="text-3xl font-bold text-red-500">${belum}</div><div>Belum Daftar</div></div><div class="card-lewa p-3 text-center stat-card" data-filter="diambil"><div class="text-3xl font-bold text-blue-600">${diambil}</div><div>Diambil</div></div><div class="card-lewa p-3 text-center"><div class="text-3xl font-bold text-orange-600">${totalLuas.toLocaleString()} m²</div><div>Total Luas</div></div>`;
             new Chart(document.getElementById("statusChart"), { type: 'doughnut', data: { labels: ["SUDAH JADI","PROSES","BELUM DAFTAR"], datasets: [{ data: [sudahl, proses, belum], backgroundColor: ["#27ae60","#f39c12","#e74c3c"] }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom' } } } });
             new Chart(document.getElementById("ambilChart"), { type: 'bar', data: { labels: ["Sudah Diambil","Belum"], datasets: [{ data: [diambil, total-diambil], backgroundColor: "#2980b9" }] }, options: { responsive: true, maintainAspectRatio: true } });
             new Chart(document.getElementById("topDesaChart"), { type: 'bar', data: { labels: ["Sondosia"], datasets: [{ data: [total], backgroundColor: "#f39c12" }] }, options: { responsive: true, maintainAspectRatio: true } });
@@ -486,270 +424,65 @@
         }
         
         function renderRekapTable() {
-            let statusFilter = document.getElementById("filterStatusRekap").value, diambilFilter = document.getElementById("filterDiambil").value, search = document.getElementById("filterUniversal").value.toLowerCase();
-            let filtered = allData.filter(d => (!statusFilter || d.status===statusFilter) && (diambilFilter==="" || (diambilFilter==="sudah" ? (d.yangMengambilSertipikat?.trim()) : !(d.yangMengambilSertipikat?.trim()))) && (!search || d.namaPemegangHak?.toLowerCase().includes(search) || d.catatan?.toLowerCase().includes(search)));
-            document.getElementById("totalFiltered").innerText = filtered.length; document.getElementById("countSudahJadi").innerText = filtered.filter(f=>f.status==="SUDAH JADI").length; document.getElementById("countProses").innerText = filtered.filter(f=>f.status==="PROSES").length;
-            let tbody = document.getElementById("rekapBody"); 
-            tbody.innerHTML = filtered.map((item,idx)=>`<tr id="row-${item.id}" class="border-b hover:bg-amber-50 transition"><td class="p-2">${idx+1}</td><td class="p-2 break-words">${escapeHtml(item.namaPemegangHak||"-")}</td><td class="p-2 break-words">${item.hakMilikNomor||"-"}</td><td class="p-2">Sondosia</td><td class="p-2">${item.luasTanah||"-"}</td><td class="p-2">${item.noBerkas||"-"}</td><td class="p-2">${item.tahunDaftar||"-"}</td><td class="p-2"><span class="status-badge ${item.status==='SUDAH JADI'?'status-sudah':item.status==='PROSES'?'status-proses':'status-belum'}">${item.status}</span></td><td class="p-2">${item.yangMengambilSertipikat||"-"}</td><td class="p-2 break-words">${escapeHtml(item.catatan||"-")}</td><td class="p-2 text-center">${item.fotoUrls?.length ? `<i class="fas fa-image text-blue-500"></i> ${item.fotoUrls.length}` : '-'}</td><td class="whitespace-nowrap"><button onclick="window.viewDetail('${item.id}')" class="text-blue-500 mr-1"><i class="fas fa-eye"></i></button><button onclick="window.editTanah('${item.id}')" class="text-amber-600 mr-1"><i class="fas fa-edit"></i></button><button onclick="window.focusMap('${item.id}')" class="text-green-600 mr-1"><i class="fas fa-map-marker-alt"></i></button><button onclick="window.hapusTanah('${item.id}')" class="text-red-500"><i class="fas fa-trash"></i></button></tr></tr>`).join("");
+            let statusFilter = document.getElementById("filterStatusRekap").value;
+            let diambilFilter = document.getElementById("filterDiambil").value;
+            let search = document.getElementById("filterUniversal").value.toLowerCase().trim();
+            let filtered = allData.filter(d => {
+                if (statusFilter && d.status !== statusFilter) return false;
+                if (diambilFilter !== "") { const sudahDiambil = (d.yangMengambilSertipikat?.trim() ? true : false); if (diambilFilter === "sudah" && !sudahDiambil) return false; if (diambilFilter === "belum" && sudahDiambil) return false; }
+                if (search !== "") { const fieldsToCheck = [d.namaPemegangHak, d.hakMilikNomor, d.noBerkas, d.catatan, d.yangMengambilSertipikat, d.status, d.desa, d.tahunDaftar?.toString(), d.luasTanah?.toString()].filter(v => v != null && v !== ""); const match = fieldsToCheck.some(field => field.toString().toLowerCase().includes(search)); if (!match) return false; }
+                return true;
+            });
+            document.getElementById("totalFiltered").innerText = filtered.length;
+            document.getElementById("countSudahJadi").innerText = filtered.filter(f => f.status === "SUDAH JADI").length;
+            document.getElementById("countProses").innerText = filtered.filter(f => f.status === "PROSES").length;
+            let tbody = document.getElementById("rekapBody");
+            tbody.innerHTML = filtered.map((item, idx) => `<tr id="row-${item.id}" class="border-b hover:bg-amber-50 transition"><td class="p-2">${idx+1}</td><td class="p-2 break-words">${escapeHtml(item.namaPemegangHak||"-")}</td><td class="p-2 break-words">${item.hakMilikNomor||"-"}</td><td class="p-2">Sondosia</td><td class="p-2">${item.luasTanah||"-"}</td><td class="p-2">${item.noBerkas||"-"}</td><td class="p-2">${item.tahunDaftar||"-"}</td><td class="p-2"><span class="status-badge ${item.status==='SUDAH JADI'?'status-sudah':item.status==='PROSES'?'status-proses':'status-belum'}">${item.status}</span></td><td class="p-2">${item.yangMengambilSertipikat||"-"}</td><td class="p-2 break-words">${escapeHtml(item.catatan||"-")}</td><td class="p-2 text-center">${item.fotoUrls?.length ? `<i class="fas fa-image text-blue-500"></i> ${item.fotoUrls.length}` : '-'}</td><td class="whitespace-nowrap"><button onclick="window.viewDetail('${item.id}')" class="text-blue-500 mr-1"><i class="fas fa-eye"></i></button><button onclick="window.editTanah('${item.id}')" class="text-amber-600 mr-1"><i class="fas fa-edit"></i></button><button onclick="window.focusMap('${item.id}')" class="text-green-600 mr-1"><i class="fas fa-map-marker-alt"></i></button><button onclick="window.hapusTanah('${item.id}')" class="text-red-500"><i class="fas fa-trash"></i></button></td></tr>`).join("");
         }
         
-        function escapeHtml(str) { if(!str) return ""; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+        function escapeHtml(str) { if(!str) return ""; return str.replace(/[&<>]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[m] || m)); }
         
-        function highlightRowAndScroll(docId) {
-            setTimeout(() => {
-                const row = document.getElementById(`row-${docId}`);
-                if (row) {
-                    row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    row.classList.add('highlight-row');
-                    if (highlightTimeout) clearTimeout(highlightTimeout);
-                    highlightTimeout = setTimeout(() => row.classList.remove('highlight-row'), 3000);
-                }
-            }, 500);
-        }
-
-        function resetRekapFilters() {
-            document.getElementById("filterStatusRekap").value = "";
-            document.getElementById("filterDiambil").value = "";
-            document.getElementById("filterUniversal").value = "";
-            renderRekapTable();
-        }
+        function highlightRowAndScroll(docId) { setTimeout(() => { const row = document.getElementById(`row-${docId}`); if(row) { row.scrollIntoView({ behavior: 'smooth', block: 'center' }); row.classList.add('highlight-row'); if(highlightTimeout) clearTimeout(highlightTimeout); highlightTimeout = setTimeout(() => row.classList.remove('highlight-row'), 3000); } }, 500); }
+        
+        function resetRekapFilters() { document.getElementById("filterStatusRekap").value = ""; document.getElementById("filterDiambil").value = ""; document.getElementById("filterUniversal").value = ""; renderRekapTable(); }
         
         window.viewDetail = (id) => { let item=allData.find(d=>d.id==id); if(item){ let fotoHtml = item.fotoUrls?.length ? `<div class="col-span-2 flex gap-2">${item.fotoUrls.map(url=>`<img src="${url}" class="h-24 w-24 object-cover rounded-xl cursor-pointer" onclick="window.open('${url}')">`).join('')}</div>` : ''; document.getElementById("detailModalBody").innerHTML = `<div class="detail-grid"><div class="detail-label font-bold">Nama</div><div>${escapeHtml(item.namaPemegangHak)}</div><div class="font-bold">Hak Milik</div><div>${item.hakMilikNomor}</div><div class="font-bold">Lokasi</div><div>Desa Sondosia, Kec. Bolo</div><div class="font-bold">Luas</div><div>${item.luasTanah} m²</div><div class="font-bold">Status</div><div>${item.status}</div><div class="font-bold">Pengambil</div><div>${item.yangMengambilSertipikat||'-'}</div><div class="font-bold">Catatan</div><div>${escapeHtml(item.catatan||'-')}</div>${fotoHtml}</div>`; document.getElementById("detailModal").classList.remove("hidden"); } };
-        window.editTanah = (id) => { let item=allData.find(d=>d.id==id); if(item){ document.getElementById("editId").value=id; document.getElementById("nama").value=item.namaPemegangHak||""; document.getElementById("hakMilik").value=item.hakMilikNomor||""; document.getElementById("luas").value=item.luasTanah||""; document.getElementById("noBerkas").value=item.noBerkas||""; document.getElementById("tahun").value=item.tahunDaftar||""; document.getElementById("statusTanah").value=item.status; document.getElementById("pengambil").value=item.yangMengambilSertipikat||""; document.getElementById("catatan").value=item.catatan||""; document.getElementById("latitude").value=item.latitude||""; document.getElementById("longitude").value=item.longitude||""; existingPhotoUrls=[...(item.fotoUrls||[])]; pendingImageFiles=[]; deletedPhotoUrls=[]; refreshCompletePreview(); triggerNav("master"); } };
         
-        window.hapusTanah = async (id) => { 
-            let ok=await Swal.fire({title:"Hapus Data?",text:"Semua foto akan dihapus permanen dari Cloudinary dan database",icon:"warning",showCancelButton:true}); 
-            if(ok.isConfirmed){ 
-                let item=allData.find(d=>d.id==id); 
-                if(item.fotoUrls && item.fotoUrls.length) {
-                    for(let url of item.fotoUrls) {
-                        await deletePhotoFromCloudinary(url);
-                    }
-                }
-                await deleteDoc(doc(tanahRef,id)); 
-                await logDetail("HAPUS",`Data ${item.namaPemegangHak} dihapus beserta ${item.fotoUrls?.length || 0} foto dari Cloudinary`); 
-                Swal.fire("Terhapus"); 
-                resetRekapFilters(); 
-                triggerNav("rekap"); 
-            } 
-        };
+        window.editTanah = (id) => { let item=allData.find(d=>d.id==id); if(item){ document.getElementById("editId").value=id; document.getElementById("nama").value=item.namaPemegangHak||""; document.getElementById("hakMilik").value=item.hakMilikNomor||""; document.getElementById("luas").value=item.luasTanah||""; document.getElementById("noBerkas").value=item.noBerkas||""; document.getElementById("tahun").value=item.tahunDaftar||""; document.getElementById("statusTanah").value=item.status; document.getElementById("pengambil").value=item.yangMengambilSertipikat||""; document.getElementById("catatan").value=item.catatan||""; document.getElementById("latitude").value=item.latitude||""; document.getElementById("longitude").value=item.longitude||""; existingPhotoUrls=[...(item.fotoUrls||[])]; pendingImageFiles=[]; deletedPhotoUrls=[]; refreshCompletePreview(); document.getElementById("cancelFormBtn").classList.remove("hidden"); triggerNav("master"); } };
         
-        // Perbaiki fungsi focusMap: buka peta, zoom ke titik, dan tampilkan popup info
-        window.focusMap = (id) => {
-            const item = allData.find(d => d.id == id);
-            if (item && item.latitude && item.longitude) {
-                triggerNav("peta");
-                setTimeout(() => {
-                    if (map) {
-                        map.flyTo([item.latitude, item.longitude], 18, { duration: 1.5 });
-                        const popupContent = `
-                            <div style="min-width: 150px;">
-                                <b>${escapeHtml(item.namaPemegangHak)}</b><br>
-                                Hak Milik: ${item.hakMilikNomor || '-'}<br>
-                                Luas: ${item.luasTanah} m²<br>
-                                Status: ${item.status}<br>
-                                <button onclick="window.viewDetail('${item.id}')" 
-                                        style="background:#2980b9; color:white; border:none; border-radius:8px; padding:4px 8px; margin-top:5px; cursor:pointer; font-size:12px;">
-                                    Lihat Detail
-                                </button>
-                            </div>
-                        `;
-                        L.popup().setLatLng([item.latitude, item.longitude]).setContent(popupContent).openOn(map);
-                    }
-                }, 500);
-            } else {
-                Swal.fire("Informasi", "Data ini belum memiliki koordinat (Latitude/Longitude).", "info");
-            }
-        };        
+        window.hapusTanah = async (id) => { let ok=await Swal.fire({title:"Hapus Data?",text:"Semua foto akan dihapus permanen dari Cloudinary dan database",icon:"warning",showCancelButton:true}); if(ok.isConfirmed){ let item=allData.find(d=>d.id==id); if(item.fotoUrls && item.fotoUrls.length) for(let url of item.fotoUrls) await deletePhotoFromCloudinary(url); await deleteDoc(doc(tanahRef,id)); await logDetail("HAPUS",`Data ${item.namaPemegangHak} dihapus beserta ${item.fotoUrls?.length || 0} foto`); Swal.fire("Terhapus"); resetRekapFilters(); triggerNav("rekap"); } };
+        
+        window.focusMap = (id) => { const item = allData.find(d => d.id == id); if (item && item.latitude && item.longitude) { triggerNav("peta"); setTimeout(() => { if (map) { map.flyTo([item.latitude, item.longitude], 18, { duration: 1.5 }); L.popup().setLatLng([item.latitude, item.longitude]).setContent(`<div><b>${escapeHtml(item.namaPemegangHak)}</b><br>Hak Milik: ${item.hakMilikNomor||'-'}<br>Luas: ${item.luasTanah} m²<br>Status: ${item.status}<br><button onclick="window.viewDetail('${item.id}')" style="background:#2980b9; color:white; border:none; border-radius:8px; padding:4px 8px; margin-top:5px;">Lihat Detail</button></div>`).openOn(map); } }, 500); } else { Swal.fire("Info", "Koordinat tidak tersedia.", "info"); } };
         
         async function renderLog() { 
             let snap=await getDocs(query(logRef, orderBy("waktu","desc"))); 
             let logs=snap.docs.map(d=>({ id:d.id, ...d.data() })); 
             let from=document.getElementById("logDateFrom").value, to=document.getElementById("logDateTo").value, type=document.getElementById("logTypeFilter").value; 
-            if(from) logs=logs.filter(l=>l.waktu.split("T")[0]>=from); 
-            if(to) logs=logs.filter(l=>l.waktu.split("T")[0]<=to); 
-            if(type) logs=logs.filter(l=>l.aksi===type); 
+            if(from) logs=logs.filter(l=>l.waktu.split("T")[0]>=from); if(to) logs=logs.filter(l=>l.waktu.split("T")[0]<=to); if(type) logs=logs.filter(l=>l.aksi===type); 
             let isAdmin = (currentUser === "Ianz");
             document.getElementById("logAdminPanel").style.display = isAdmin ? "flex" : "none";
-            let rows = logs.map(l => `
-                <tr>
-                    <td class="p-2 text-center">${isAdmin ? `<input type="checkbox" class="log-checkbox" value="${l.id}">` : ''}</td>
-                    <td class="p-2">${new Date(l.waktu).toLocaleString()}</td>
-                    <td class="p-2">${l.pengguna}</td>
-                    <td class="p-2">${l.aksi}</td>
-                    <td class="p-2">${l.detail}</td>
-                </tr>
-            `).join("");
-            document.getElementById("logTable").innerHTML = rows;
-            if (isAdmin) {
-                document.getElementById("selectAllLogs").onclick = (e) => {
-                    document.querySelectorAll(".log-checkbox").forEach(cb => cb.checked = e.target.checked);
-                };
-            }
+            document.getElementById("logTable").innerHTML = logs.map(l => `<tr><td class="p-2 text-center">${isAdmin ? `<input type="checkbox" class="log-checkbox" value="${l.id}">` : ''}</td><td class="p-2">${new Date(l.waktu).toLocaleString()}</td><td class="p-2">${l.pengguna}</td><td class="p-2">${l.aksi}</td><td class="p-2">${l.detail}</td></tr>`).join("");
+            if(isAdmin) document.getElementById("selectAllLogs").onclick = (e) => document.querySelectorAll(".log-checkbox").forEach(cb => cb.checked = e.target.checked);
         }
         
-        async function deleteSelectedLogs() {
-            const checkboxes = document.querySelectorAll(".log-checkbox:checked");
-            if (checkboxes.length === 0) return Swal.fire("Tidak ada log dipilih");
-            const confirm = await Swal.fire({ title: `Hapus ${checkboxes.length} log?`, icon: "warning", showCancelButton: true });
-            if (!confirm.isConfirmed) return;
-            const batch = writeBatch(db);
-            for (let cb of checkboxes) {
-                batch.delete(doc(logRef, cb.value));
-            }
-            await batch.commit();
-            Swal.fire("Berhasil", `${checkboxes.length} log dihapus`, "success");
-            renderLog();
-        }
+        async function deleteSelectedLogs() { const checkboxes = document.querySelectorAll(".log-checkbox:checked"); if(checkboxes.length===0) return Swal.fire("Tidak ada log dipilih"); const confirm = await Swal.fire({ title: `Hapus ${checkboxes.length} log?`, icon: "warning", showCancelButton: true }); if(!confirm.isConfirmed) return; const batch = writeBatch(db); for(let cb of checkboxes) batch.delete(doc(logRef, cb.value)); await batch.commit(); Swal.fire("Berhasil", `${checkboxes.length} log dihapus`, "success"); renderLog(); }
+        async function deleteAllLogs() { const snap = await getDocs(logRef); if(snap.empty) return Swal.fire("Tidak ada log"); const confirm = await Swal.fire({ title: "Hapus SEMUA log?", text: "Tindakan ini tidak dapat dibatalkan", icon: "warning", showCancelButton: true }); if(!confirm.isConfirmed) return; const batch = writeBatch(db); snap.docs.forEach(d => batch.delete(d.ref)); await batch.commit(); Swal.fire("Berhasil", "Semua log telah dihapus", "success"); renderLog(); }
+        document.getElementById("deleteSelectedLogsBtn")?.addEventListener("click", deleteSelectedLogs); document.getElementById("deleteAllLogsBtn")?.addEventListener("click", deleteAllLogs);
         
-        async function deleteAllLogs() {
-            const snap = await getDocs(logRef);
-            if (snap.empty) return Swal.fire("Tidak ada log");
-            const confirm = await Swal.fire({ title: "Hapus SEMUA log?", text: "Tindakan ini tidak dapat dibatalkan", icon: "warning", showCancelButton: true });
-            if (!confirm.isConfirmed) return;
-            const batch = writeBatch(db);
-            snap.docs.forEach(doc => batch.delete(doc.ref));
-            await batch.commit();
-            Swal.fire("Berhasil", "Semua log telah dihapus", "success");
-            renderLog();
-        }
-        
-        document.getElementById("deleteSelectedLogsBtn")?.addEventListener("click", deleteSelectedLogs);
-        document.getElementById("deleteAllLogsBtn")?.addEventListener("click", deleteAllLogs);
-        
-        // Peta
         let currentTileLayer = null;
-        function initMap() { 
-            if(map) return; 
-            map = L.map('map').setView([-8.49, 118.72], 13); 
-            updateMapLayer(document.getElementById("mapLayerSelect").value); 
-            markerLayer = L.layerGroup().addTo(map); 
-            refreshMapMarkers(); 
-            // Tambahkan garis jalan dari KML warna merah
-            addJalanLayerFromKML(map, kmlJalanString);
-        }
-        
-        // Fungsi untuk menyesuaikan peta agar semua titik terlihat
-        function fitMapToBounds() {
-            if (!map) return;
-            const validPoints = allData.filter(d => d.latitude && d.longitude);
-            if (validPoints.length === 0) {
-                map.setView([-8.49, 118.72], 13);
-                return;
-            }
-            const bounds = L.latLngBounds(validPoints.map(d => [d.latitude, d.longitude]));
-            map.fitBounds(bounds, { padding: [50, 50] });
-        }
-        
-        function updateMapLayer(layerType) {
-            if(currentTileLayer) map.removeLayer(currentTileLayer);
-            let url = '';
-            if(layerType === 'satellite') url = 'https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}';
-            else if(layerType === 'hybrid') url = 'https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}';
-            else url = 'https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}';
-            currentTileLayer = L.tileLayer(url, { subdomains:['mt0','mt1','mt2','mt3'], attribution: 'Google Maps', maxZoom: 20 }).addTo(map);
-        }
-        
+        function initMap() { if(map) return; map = L.map('map').setView([-8.49, 118.72], 13); updateMapLayer(document.getElementById("mapLayerSelect").value); markerLayer = L.layerGroup().addTo(map); refreshMapMarkers(); addJalanLayerFromKML(map, kmlJalanString); }
+        function fitMapToBounds() { if(!map) return; const validPoints = allData.filter(d => d.latitude && d.longitude); if(validPoints.length === 0) { map.setView([-8.49, 118.72], 13); return; } map.fitBounds(L.latLngBounds(validPoints.map(d => [d.latitude, d.longitude])), { padding: [50, 50] }); }
+        function updateMapLayer(layerType) { if(currentTileLayer) map.removeLayer(currentTileLayer); let url = layerType === 'satellite' ? 'https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}' : layerType === 'hybrid' ? 'https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}' : 'https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}'; currentTileLayer = L.tileLayer(url, { subdomains:['mt0','mt1','mt2','mt3'], attribution: 'Google Maps', maxZoom: 20 }).addTo(map); }
         document.getElementById("mapLayerSelect")?.addEventListener("change", (e) => { if(map) updateMapLayer(e.target.value); });
         
-        function refreshMapMarkers() { 
-            if(!markerLayer) return; 
-            markerLayer.clearLayers(); 
-            
-            allData.forEach(d => { 
-                if(d.latitude && d.longitude) { 
-                    let color = d.status === "SUDAH JADI" ? "#27ae60" : d.status === "PROSES" ? "#f39c12" : "#e74c3c"; 
-                    let icon = L.divIcon({
-                        html: `<div style="background:${color}; width:14px; height:14px; border-radius:50%; border:2px solid #fff; box-shadow:0 0 2px #000;"></div>`,
-                        iconSize: [14, 14],
-                        className: 'custom-marker'
-                    }); 
-                    
-                    const popupContent = `
-                        <div style="min-width: 180px; max-width: 250px; font-family: 'Inter', sans-serif;">
-                            <b style="font-size:14px;">${escapeHtml(d.namaPemegangHak)}</b><br>
-                            <strong>Hak Milik:</strong> ${escapeHtml(d.hakMilikNomor) || '-'}<br>
-                            <strong>Luas:</strong> ${d.luasTanah || 0} m²<br>
-                            <strong>Status:</strong> ${d.status}<br>
-                            <button onclick="window.viewDetail('${d.id}')" 
-                                style="background:#2980b9; color:white; border:none; border-radius:6px; padding:4px 10px; margin-top:8px; cursor:pointer; width:100%; font-size:12px;">
-                                📋 Lihat Detail
-                            </button>
-                        </div>
-                    `;
-                    
-                    L.marker([d.latitude, d.longitude], { icon })
-                        .bindPopup(popupContent)
-                        .addTo(markerLayer);
-                } 
-            }); 
-            
-            if (document.getElementById('peta').style.display !== 'none') {
-                const validPoints = allData.filter(d => d.latitude && d.longitude);
-                if (validPoints.length) {
-                    const bounds = L.latLngBounds(validPoints.map(d => [d.latitude, d.longitude]));
-                    map.fitBounds(bounds, { padding: [50, 50] });
-                } else {
-                    map.setView([-8.49, 118.72], 13);
-                }
-            }
-        }
+        function refreshMapMarkers() { if(!markerLayer) return; markerLayer.clearLayers(); allData.forEach(d => { if(d.latitude && d.longitude) { let color = d.status === "SUDAH JADI" ? "#27ae60" : d.status === "PROSES" ? "#f39c12" : "#e74c3c"; let icon = L.divIcon({ html: `<div style="background:${color}; width:14px; height:14px; border-radius:50%; border:2px solid #fff; box-shadow:0 0 2px #000;"></div>`, iconSize: [14, 14], className: 'custom-marker' }); L.marker([d.latitude, d.longitude], { icon }).bindPopup(`<div style="min-width:180px;"><b>${escapeHtml(d.namaPemegangHak)}</b><br><strong>Hak Milik:</strong> ${escapeHtml(d.hakMilikNomor)||'-'}<br><strong>Luas:</strong> ${d.luasTanah||0} m²<br><strong>Status:</strong> ${d.status}<br><button onclick="window.viewDetail('${d.id}')" style="background:#2980b9; color:white; border:none; border-radius:6px; padding:4px 10px; margin-top:8px; width:100%">📋 Lihat Detail</button></div>`).addTo(markerLayer); } }); if(document.getElementById('peta').style.display !== 'none') fitMapToBounds(); }
         
-        document.getElementById("tanahForm").addEventListener("submit", async (e) => { 
-            e.preventDefault(); 
-            const id = document.getElementById("editId").value; 
-            Swal.fire({title:'Menyimpan...',allowOutsideClick:false,didOpen:()=>Swal.showLoading()}); 
-            try { 
-                let newUrls = await uploadAllPending(); 
-                for(let url of deletedPhotoUrls) {
-                    await deletePhotoFromCloudinary(url);
-                }
-                const allUrls = [...existingPhotoUrls, ...newUrls]; 
-                const data = { 
-                    namaPemegangHak: document.getElementById("nama").value, 
-                    hakMilikNomor: document.getElementById("hakMilik").value, 
-                    desa: DESA_TETAP, 
-                    luasTanah: document.getElementById("luas").value, 
-                    noBerkas: document.getElementById("noBerkas").value, 
-                    tahunDaftar: document.getElementById("tahun").value, 
-                    status: document.getElementById("statusTanah").value, 
-                    yangMengambilSertipikat: document.getElementById("pengambil").value, 
-                    catatan: document.getElementById("catatan").value, 
-                    latitude: parseFloat(document.getElementById("latitude").value)||null, 
-                    longitude: parseFloat(document.getElementById("longitude").value)||null, 
-                    fotoUrls: allUrls, 
-                    updatedAt: new Date().toISOString() 
-                }; 
-                let newDocId = null;
-                if(id) { 
-                    const oldItem = allData.find(d => d.id === id);
-                    await updateDoc(doc(tanahRef,id), data); 
-                    await logEditChanges(oldItem, data, id);
-                    Swal.fire("Berhasil","Data diperbarui","success");
-                    newDocId = id;
-                } else { 
-                    const ref = await addDoc(tanahRef, {...data, createdAt: new Date().toISOString()}); 
-                    await logDetail("TAMBAH",`Menambahkan data baru: ${data.namaPemegangHak} (Luas: ${data.luasTanah} m², No Berkas: ${data.noBerkas || '-'}, Status: ${data.status}) dengan ${allUrls.length} foto`); 
-                    Swal.fire("Berhasil","Data tersimpan","success");
-                    newDocId = ref.id;
-                } 
-                resetFormToEmpty(); 
-                resetRekapFilters();
-                triggerNav("rekap");
-                if (newDocId) highlightRowAndScroll(newDocId);
-            } catch(err){ 
-                Swal.fire("Gagal",err.message,"error"); 
-            } 
-        });
+        document.getElementById("tanahForm").addEventListener("submit", async (e) => { e.preventDefault(); const id = document.getElementById("editId").value; Swal.fire({title:'Menyimpan...',allowOutsideClick:false,didOpen:()=>Swal.showLoading()}); try { let newUrls = await uploadAllPending(); for(let url of deletedPhotoUrls) await deletePhotoFromCloudinary(url); const allUrls = [...existingPhotoUrls, ...newUrls]; const data = { namaPemegangHak: document.getElementById("nama").value, hakMilikNomor: document.getElementById("hakMilik").value, desa: DESA_TETAP, luasTanah: document.getElementById("luas").value, noBerkas: document.getElementById("noBerkas").value, tahunDaftar: document.getElementById("tahun").value, status: document.getElementById("statusTanah").value, yangMengambilSertipikat: document.getElementById("pengambil").value, catatan: document.getElementById("catatan").value, latitude: parseFloat(document.getElementById("latitude").value)||null, longitude: parseFloat(document.getElementById("longitude").value)||null, fotoUrls: allUrls, updatedAt: new Date().toISOString() }; let newDocId = null; if(id) { const oldItem = allData.find(d => d.id === id); await updateDoc(doc(tanahRef,id), data); await logEditChanges(oldItem, data, id); Swal.fire("Berhasil","Data diperbarui","success"); newDocId = id; } else { const ref = await addDoc(tanahRef, {...data, createdAt: new Date().toISOString()}); await logDetail("TAMBAH",`Menambahkan data: ${data.namaPemegangHak} (Luas: ${data.luasTanah} m², Status: ${data.status}) dengan ${allUrls.length} foto`); Swal.fire("Berhasil","Data tersimpan","success"); newDocId = ref.id; } resetFormToEmpty(); resetRekapFilters(); triggerNav("rekap"); if(newDocId) highlightRowAndScroll(newDocId); } catch(err){ Swal.fire("Gagal",err.message,"error"); } });
         
-        function resetFormToEmpty() { document.getElementById("tanahForm").reset(); document.getElementById("editId").value=""; existingPhotoUrls=[]; pendingImageFiles=[]; deletedPhotoUrls=[]; refreshCompletePreview(); }
-        document.getElementById("cancelFormBtn").onclick = () => {
-            resetFormToEmpty();
-            triggerNav("rekap");
-        };
+        function resetFormToEmpty() { document.getElementById("tanahForm").reset(); document.getElementById("editId").value=""; existingPhotoUrls=[]; pendingImageFiles=[]; deletedPhotoUrls=[]; refreshCompletePreview(); document.getElementById("cancelFormBtn").classList.add("hidden"); }
+        document.getElementById("cancelFormBtn").onclick = () => { resetFormToEmpty(); triggerNav("rekap"); };
         document.getElementById("resetFormBtn").onclick = resetFormToEmpty;
         
-        // Camera handler
         let modalStream=null, modalCapturedBlob=null;
         async function openCameraModal(){ if(modalStream) modalStream.getTracks().forEach(t=>t.stop()); try{ let stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{exact:"environment"}}}); modalStream=stream; document.getElementById("modalVideo").srcObject=stream; document.getElementById("cameraModal").classList.add("active"); }catch{ try{ let stream=await navigator.mediaDevices.getUserMedia({video:true}); modalStream=stream; document.getElementById("modalVideo").srcObject=stream; document.getElementById("cameraModal").classList.add("active"); }catch(e){ Swal.fire("Kamera tidak tersedia"); } } }
         document.getElementById("btnOpenCameraModal").onclick = openCameraModal;
@@ -759,128 +492,30 @@
         document.getElementById("modalCloseBtn").onclick = closeCameraModal;
         function closeCameraModal(){ document.getElementById("cameraModal").classList.remove("active"); if(modalStream) modalStream.getTracks().forEach(t=>t.stop()); modalStream=null; document.getElementById("modalVideo").classList.remove("hidden"); document.getElementById("modalPreview").classList.add("hidden"); document.getElementById("modalCaptureBtn").classList.remove("hidden"); document.getElementById("modalRetakeBtn").classList.add("hidden"); document.getElementById("modalSaveBtn").classList.add("hidden"); }
         
-        // Fungsi import Excel yang diperbarui dengan penanganan koordinat
-        async function importExcelData(file) {
-            const data = await file.arrayBuffer();
-            const wb = XLSX.read(data, { cellFormula: false });
-            const sheet = wb.Sheets["Jalan Lewamori"];
-            if (!sheet) { Swal.fire("Gagal", "Sheet 'Jalan Lewamori' tidak ditemukan", "error"); return; }
-            let rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" });
-            let headerRowIndex = -1;
-            for (let i = 0; i < Math.min(rows.length, 30); i++) {
-                if (rows[i] && rows[i].some(cell => cell && cell.toString().toUpperCase().includes("NAMA PEMEGANG HAK"))) {
-                    headerRowIndex = i;
-                    break;
-                }
-            }
-            if (headerRowIndex === -1) { Swal.fire("Gagal", "Tidak menemukan kolom 'Nama Pemegang Hak'", "error"); return; }
-            const header = rows[headerRowIndex];
-            const idxNama = header.findIndex(c => c && c.toString().toUpperCase().includes("NAMA PEMEGANG HAK"));
-            const idxHak = header.findIndex(c => c && c.toString().toUpperCase().includes("HAK MILIK NOMOR"));
-            const idxLuas = header.findIndex(c => c && c.toString().toUpperCase().includes("LUAS"));
-            const idxBerkas = header.findIndex(c => c && c.toString().toUpperCase().includes("NO BERKAS"));
-            const idxTahun = header.findIndex(c => c && c.toString().toUpperCase().includes("TAHUN DAFTAR"));
-            const idxLat = header.findIndex(c => c && c.toString().toUpperCase().includes("LATITUDE"));
-            const idxLng = header.findIndex(c => c && c.toString().toUpperCase().includes("LONGITUDE"));
-            
-            let totalAdded = 0;
-            for (let i = headerRowIndex + 1; i < rows.length; i++) {
-                const row = rows[i];
-                if (!row || !row[idxNama]) continue;
-                let nama = row[idxNama]?.toString().trim() || "";
-                if (!nama) continue;
-                let hakMilik = row[idxHak]?.toString().trim() || "";
-                let luas = parseFloat(row[idxLuas]) || 0;
-                let noBerkas = row[idxBerkas]?.toString().trim() || "";
-                let tahun = row[idxTahun]?.toString().trim() || "";
-                let status = (noBerkas && noBerkas !== "") ? "PROSES" : "BELUM DAFTAR";
-                
-                let latRaw = row[idxLat]?.toString().trim() || "";
-                let lngRaw = row[idxLng]?.toString().trim() || "";
-                latRaw = latRaw.replace(/,/g, '.');
-                lngRaw = lngRaw.replace(/,/g, '.');
-                latRaw = latRaw.replace(/[^0-9.-]/g, '');
-                lngRaw = lngRaw.replace(/[^0-9.-]/g, '');
-                let latitude = parseFloat(latRaw);
-                let longitude = parseFloat(lngRaw);
-                if (isNaN(latitude)) latitude = null;
-                if (isNaN(longitude)) longitude = null;
-                
-                await addDoc(tanahRef, {
-                    namaPemegangHak: nama,
-                    hakMilikNomor: hakMilik,
-                    desa: DESA_TETAP,
-                    luasTanah: luas,
-                    noBerkas: noBerkas,
-                    tahunDaftar: tahun,
-                    status: status,
-                    yangMengambilSertipikat: "",
-                    catatan: "",
-                    latitude: latitude,
-                    longitude: longitude,
-                    fotoUrls: [],
-                    createdAt: new Date().toISOString()
-                });
-                totalAdded++;
-            }
-            Swal.fire(`Sukses! ${totalAdded} data berhasil ditambahkan ke Desa Sondosia.`);
-            resetRekapFilters();
-            triggerNav("rekap");
-        }
+        async function importExcelData(file) { const data = await file.arrayBuffer(); const wb = XLSX.read(data, { cellFormula: false }); const sheet = wb.Sheets["Jalan Lewamori"]; if(!sheet) { Swal.fire("Gagal", "Sheet 'Jalan Lewamori' tidak ditemukan", "error"); return; } let rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" }); let headerRowIndex = -1; for(let i=0;i<Math.min(rows.length,30);i++){ if(rows[i] && rows[i].some(cell => cell && cell.toString().toUpperCase().includes("NAMA PEMEGANG HAK"))){ headerRowIndex=i; break; } } if(headerRowIndex === -1){ Swal.fire("Gagal","Tidak menemukan kolom 'Nama Pemegang Hak'","error"); return; } const header = rows[headerRowIndex]; const idxNama=header.findIndex(c=>c && c.toString().toUpperCase().includes("NAMA PEMEGANG HAK")); const idxHak=header.findIndex(c=>c && c.toString().toUpperCase().includes("HAK MILIK NOMOR")); const idxLuas=header.findIndex(c=>c && c.toString().toUpperCase().includes("LUAS")); const idxBerkas=header.findIndex(c=>c && c.toString().toUpperCase().includes("NO BERKAS")); const idxTahun=header.findIndex(c=>c && c.toString().toUpperCase().includes("TAHUN DAFTAR")); const idxLat=header.findIndex(c=>c && c.toString().toUpperCase().includes("LATITUDE")); const idxLng=header.findIndex(c=>c && c.toString().toUpperCase().includes("LONGITUDE")); let totalAdded=0; for(let i=headerRowIndex+1;i<rows.length;i++){ const row=rows[i]; if(!row || !row[idxNama]) continue; let nama=row[idxNama]?.toString().trim()||""; if(!nama) continue; let hakMilik=row[idxHak]?.toString().trim()||""; let luas=parseFloat(row[idxLuas])||0; let noBerkas=row[idxBerkas]?.toString().trim()||""; let tahun=row[idxTahun]?.toString().trim()||""; let status=(noBerkas && noBerkas!=="")?"PROSES":"BELUM DAFTAR"; let latRaw=row[idxLat]?.toString().trim()||""; let lngRaw=row[idxLng]?.toString().trim()||""; latRaw=latRaw.replace(/,/g,'.'); lngRaw=lngRaw.replace(/,/g,'.'); latRaw=latRaw.replace(/[^0-9.-]/g,''); lngRaw=lngRaw.replace(/[^0-9.-]/g,''); let latitude=parseFloat(latRaw); let longitude=parseFloat(lngRaw); if(isNaN(latitude)) latitude=null; if(isNaN(longitude)) longitude=null; await addDoc(tanahRef,{ namaPemegangHak:nama, hakMilikNomor:hakMilik, desa:DESA_TETAP, luasTanah:luas, noBerkas:noBerkas, tahunDaftar:tahun, status:status, yangMengambilSertipikat:"", catatan:"", latitude:latitude, longitude:longitude, fotoUrls:[], createdAt:new Date().toISOString() }); totalAdded++; } Swal.fire(`Sukses! ${totalAdded} data berhasil ditambahkan`); resetRekapFilters(); triggerNav("rekap"); }
         document.getElementById("importExcelTrigger").onclick = ()=>document.getElementById("importExcelFile").click();
         document.getElementById("importExcelFile").onchange = async(e)=>{ if(e.target.files[0]) await importExcelData(e.target.files[0]); e.target.value=""; };
         document.getElementById("importSeedDataBtn").onclick = ()=>document.getElementById("importExcelTrigger").click();
         document.getElementById("exportExcelBtn").onclick = ()=>{ let ws=XLSX.utils.json_to_sheet(allData.map(d=>({ "Nama Pemegang Hak":d.namaPemegangHak,"Hak Milik No.":d.hakMilikNomor,Desa:d.desa,Luas:d.luasTanah,"No Berkas":d.noBerkas,"Tahun Daftar":d.tahunDaftar,Status:d.status,Pengambil:d.yangMengambilSertipikat,Catatan:d.catatan,Latitude:d.latitude,Longitude:d.longitude }))); let wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,"DataLewamori"); XLSX.writeFile(wb,`Data_Lewamori_${Date.now()}.xlsx`); };
         document.getElementById("exportKmlBtn").onclick = ()=>{ let kml='<?xml version="1.0" encoding="UTF-8"?><kml><Document>'; allData.forEach(d=>{ if(d.latitude&&d.longitude) kml+=`<Placemark><name>${d.namaPemegangHak}</name><description>Desa: ${d.desa}, Status: ${d.status}</description><Point><coordinates>${d.longitude},${d.latitude},0</coordinates></Point></Placemark>`; }); kml+='</Document></kml>'; saveAs(new Blob([kml],{type:"application/vnd.google-earth.kml+xml"}),`tanah_lewamori_${Date.now()}.kml`); };
         
-        function triggerNav(page) { document.querySelectorAll(".page-section").forEach(s=>s.classList.add("hidden")); document.getElementById(page).classList.remove("hidden"); document.querySelectorAll(".nav-btn").forEach(btn=>{ if(btn.dataset.page===page) btn.classList.add("active"); else btn.classList.remove("active"); }); if(page==="peta") setTimeout(() => {
-            map?.invalidateSize();
-            fitMapToBounds();
-        }, 150); 
-        if(page==="log") renderLog(); localStorage.setItem("siap_lewamori_page", page); }
-        
+        function triggerNav(page) { document.querySelectorAll(".page-section").forEach(s=>s.classList.add("hidden")); document.getElementById(page).classList.remove("hidden"); document.querySelectorAll(".nav-btn").forEach(btn=>{ if(btn.dataset.page===page) btn.classList.add("active"); else btn.classList.remove("active"); }); if(page==="peta") setTimeout(() => { map?.invalidateSize(); fitMapToBounds(); }, 150); if(page==="log") renderLog(); localStorage.setItem("siap_lewamori_page", page); }
         document.querySelectorAll(".nav-btn").forEach(btn=>btn.addEventListener("click",()=>triggerNav(btn.dataset.page)));
         document.getElementById("toggleFilterBtn").onclick = ()=>document.getElementById("filterPanel").classList.toggle("hidden");
-        document.getElementById("resetFilterBtn").onclick = ()=>{ resetRekapFilters(); };
+        document.getElementById("resetFilterBtn").onclick = resetRekapFilters;
         ["filterStatusRekap","filterDiambil","filterUniversal"].forEach(id=>document.getElementById(id)?.addEventListener("change", renderRekapTable));
         document.getElementById("filterUniversal")?.addEventListener("input", renderRekapTable);
         document.getElementById("closeModalBtn").onclick = ()=>document.getElementById("detailModal").classList.add("hidden");
         window.closeDetailModal = ()=>document.getElementById("detailModal").classList.add("hidden");
         
-        // Login
         const loginOverlay=document.getElementById('loginOverlay'), appContainer=document.getElementById('appContent');
-        function doLogin(nama){ 
-            currentUser = nama; 
-            document.getElementById('currentUserName').innerText = currentUser; 
-            localStorage.setItem("siap_lewamori_user", nama); 
-            loginOverlay.style.display='none'; 
-            appContainer.style.display='block'; 
-            loadData(); 
-            initMap(); 
-            const savedPage = localStorage.getItem("siap_lewamori_page"); 
-            triggerNav(savedPage && ["beranda","master","rekap","peta","log"].includes(savedPage) ? savedPage : "beranda"); 
-            logDetail("LOGIN", `Pengguna ${nama} login`); 
-        }
+        function doLogin(nama){ currentUser = nama; document.getElementById('currentUserName').innerText = currentUser; localStorage.setItem("siap_lewamori_user", nama); loginOverlay.style.display='none'; appContainer.style.display='block'; loadData(); initMap(); const savedPage = localStorage.getItem("siap_lewamori_page"); triggerNav(savedPage && ["beranda","master","rekap","peta","log"].includes(savedPage) ? savedPage : "beranda"); logDetail("LOGIN", `Pengguna ${nama} login`); }
         document.getElementById("loginForm").addEventListener("submit",(e)=>{ e.preventDefault(); let nama=document.getElementById("loginNama").value.trim(); if(!nama) return Swal.fire("Perhatian","Nama wajib diisi","warning"); doLogin(nama); });
         const savedUser=localStorage.getItem("siap_lewamori_user"); if(savedUser) doLogin(savedUser); else { loginOverlay.style.display='flex'; appContainer.style.display='none'; }
         document.getElementById("logoutBtn").addEventListener("click",async()=>{ await logDetail("LOGOUT",`${currentUser} keluar`); localStorage.removeItem("siap_lewamori_user"); localStorage.removeItem("siap_lewamori_page"); appContainer.style.display='none'; loginOverlay.style.display='flex'; if(unsubscribeSnapshot) unsubscribeSnapshot(); if(map) map.remove(); map=null; });
         document.getElementById("btnUploadMultiple").addEventListener("click",()=>document.getElementById("uploadFileInput").click());
         document.getElementById("uploadFileInput").addEventListener("change",(e)=>{ Array.from(e.target.files).forEach(f=>addPendingFile(f)); e.target.value=""; });
-        
-        document.getElementById("statsContainer")?.addEventListener("click", (e) => {
-            const card = e.target.closest("[data-filter]");
-            if (!card) return;
-            const filter = card.dataset.filter;
-            document.getElementById("filterStatusRekap").value = "";
-            document.getElementById("filterDiambil").value = "";
-            if (filter === "sudah") document.getElementById("filterStatusRekap").value = "SUDAH JADI";
-            else if (filter === "proses") document.getElementById("filterStatusRekap").value = "PROSES";
-            else if (filter === "belum") document.getElementById("filterStatusRekap").value = "BELUM DAFTAR";
-            else if (filter === "diambil") document.getElementById("filterDiambil").value = "sudah";
-            else if (filter === "all") { document.getElementById("filterStatusRekap").value = ""; document.getElementById("filterDiambil").value = ""; document.getElementById("filterUniversal").value = ""; }
-            renderRekapTable();
-            triggerNav("rekap");
-        });
+        document.getElementById("statsContainer")?.addEventListener("click", (e) => { const card = e.target.closest("[data-filter]"); if(!card) return; const filter = card.dataset.filter; document.getElementById("filterStatusRekap").value=""; document.getElementById("filterDiambil").value=""; if(filter==="sudah") document.getElementById("filterStatusRekap").value="SUDAH JADI"; else if(filter==="proses") document.getElementById("filterStatusRekap").value="PROSES"; else if(filter==="belum") document.getElementById("filterStatusRekap").value="BELUM DAFTAR"; else if(filter==="diambil") document.getElementById("filterDiambil").value="sudah"; else if(filter==="all"){ document.getElementById("filterStatusRekap").value=""; document.getElementById("filterDiambil").value=""; document.getElementById("filterUniversal").value=""; } renderRekapTable(); triggerNav("rekap"); });
     </script>
 </body>
 </html>
